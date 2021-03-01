@@ -30,6 +30,18 @@ namespace ReverseMarkdown
                 throw new ArgumentNullException("markdown");
             }
 
+            if (markdown.StartsWith(
+                Environment.NewLine + Environment.NewLine) == true)
+            {
+                markdown = markdown.Substring(Environment.NewLine.Length + 1);
+            }
+
+            if (markdown.EndsWith(
+                Environment.NewLine + Environment.NewLine) == true)
+            {
+                markdown = markdown.Remove(markdown.Length - Environment.NewLine.Length);
+            }
+
             const string pattern = @"(\r?\n){3,}";
             string replacement = Environment.NewLine + Environment.NewLine;
 
