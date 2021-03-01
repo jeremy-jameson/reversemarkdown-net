@@ -355,6 +355,15 @@ namespace ReverseMarkdown.Test
         public Task WhenThereIsEmptyBlockquoteTag_ThenConvertToMarkdownBlockquote()
         {
             var html = "This text has <blockquote></blockquote>. This text appear after header.";
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
+        }
+
+        [Fact]
+        public Task WhenThereIsEmptyBlockquoteTag_ThenRemoveConsecutiveBlankLinesByDefault()
+        {
+            var html = "Empty blockquote: <blockquote></blockquote> Some additional text.";
             return CheckConversion(html);
         }
 

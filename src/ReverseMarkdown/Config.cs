@@ -12,6 +12,22 @@ namespace ReverseMarkdown
         public bool RemoveComments { get; set; } = false;
 
         /// <summary>
+        /// If <c>true</c>, multiple consecutive blank lines are removed from
+        /// the Markdown. Defaults to <c>true</c>.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This ensures the generated Markdown does not violate the following
+        /// <a href="https://github.com/DavidAnson/markdownlint">markdownlint</a>
+        /// rule:
+        /// 
+        /// <a href="https://github.com/DavidAnson/markdownlint/blob/v0.23.1/doc/Rules.md#md012">
+        ///     MD012 - Multiple consecutive blank lines</a>
+        /// </para>
+        /// </remarks>
+        public bool RemoveMultipleConsecutiveBlankLines { get; set; } = true;
+
+        /// <summary>
         /// Specify which schemes (without trailing colon) are to be allowed for &lt;a&gt; and &lt;img&gt; tags. Others will be bypassed. By default allows everything.
         /// <para>If <see cref="string.Empty" /> provided and when href schema couldn't be determined - whitelists</para>
         /// </summary>

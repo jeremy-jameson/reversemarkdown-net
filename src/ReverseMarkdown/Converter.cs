@@ -56,6 +56,17 @@ namespace ReverseMarkdown
 
             var result = Lookup(root.Name).Convert(root);
 
+            if (Config.RemoveMultipleConsecutiveBlankLines == true)
+            {
+                // Use the IMarkdownFormatter interface to allow
+                // the formatter dependency to be specified using some other
+                // mechanism in the future (e.g. dependency injection or perhaps
+                // specifying a custom formatter via configuration).
+                IMarkdownFormatter formatter = new DefaultMarkdownFormatter();
+
+                result = formatter.RemoveMultipleConsecutiveBlankLines(result);
+            }
+
             return result;
         }
 
