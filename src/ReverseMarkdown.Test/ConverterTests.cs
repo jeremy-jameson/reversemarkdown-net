@@ -1321,6 +1321,27 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task When_BoldElementHasLeadingWhitespace_MarkdownHasNormalizedWhitespace()
+        {
+            var html = "<b>\n\t some bold text</b>";
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_BoldElementHasTrailingWhitespace_MarkdownHasNormalizedWhitespace()
+        {
+            var html = "<b>some bold text\n\t </b>";
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_BoldElementHasVarietyOfWhitespace_MarkdownHasNormalizedWhitespace()
+        {
+            var html = "<b>some\n\tbold\n \ttext\n</b>";
+            return CheckConversion(html);
+        }
+
+        [Fact]
         public Task When_PreElementHasEmbeddedWhitespace_MarkdownPreservesWhitespace()
         {
             var html = "<pre>function foo {\n\t...</pre>";
