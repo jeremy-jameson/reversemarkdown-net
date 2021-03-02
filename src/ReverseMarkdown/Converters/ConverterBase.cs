@@ -54,16 +54,24 @@ namespace ReverseMarkdown.Converters
             return System.Net.WebUtility.HtmlDecode(html);
         }
 
-        protected static string IndentationFor(HtmlNode node, bool zeroIndex=false)
+        protected virtual int GetIndentationLevel(HtmlNode node)
         {
-            var length = node.Ancestors("ol").Count() + node.Ancestors("ul").Count();
+            var indentationLevel = node.Ancestors("ol").Count()
+                + node.Ancestors("ul").Count();
 
-            if (zeroIndex)
-            {
-                length -= 1;
-            }
+            return indentationLevel;
+        }
 
-            return new string(' ', length*4);
+        protected virtual string GetIndentation(int indentationLevel)
+        {
+            return new string(' ', indentationLevel * 4);
+        }
+
+        protected virtual string IndentationFor(HtmlNode node)
+        {
+            var indentationLevel = GetIndentationLevel(node);
+
+            return GetIndentation(indentationLevel);
         }
 
         public abstract string Convert(HtmlNode node);

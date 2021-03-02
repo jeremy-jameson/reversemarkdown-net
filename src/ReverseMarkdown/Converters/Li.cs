@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 
 using HtmlAgilityPack;
@@ -26,7 +27,11 @@ namespace ReverseMarkdown.Converters
             }
 
             var content = TreatChildren(node);
-            var indentation = IndentationFor(node, true);
+            var indentationLevel = GetIndentationLevel(node);
+            Debug.Assert(indentationLevel > 0);
+            indentationLevel--; // no indentation for "first level" list items
+
+            var indentation = GetIndentation(indentationLevel);
             var prefix = PrefixFor(node);
 
             return $"{indentation}{prefix}{content.Chomp()}{Environment.NewLine}";

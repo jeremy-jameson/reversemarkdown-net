@@ -19,7 +19,7 @@ namespace ReverseMarkdown.Converters
             return $"{indentation}{TreatChildren(node).Trim()}{newlineAfter}";
         }
 
-        private static string IndentationFor(HtmlNode node)
+        protected override string IndentationFor(HtmlNode node)
         {
             string parentName = node.ParentNode.Name.ToLowerInvariant();
 
