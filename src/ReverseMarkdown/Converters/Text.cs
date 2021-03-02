@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-
 using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
-    public class Text : ConverterBase
+    public class Text : InlineElementConverter
     {
         private readonly Dictionary<string, string> _escapedKeyChars = new Dictionary<string, string>();
 
@@ -19,10 +18,15 @@ namespace ReverseMarkdown.Converters
 
         public override string Convert(HtmlNode node)
         {
-            return node.InnerText.Trim() == string.Empty ? TreatEmpty(node) : TreatText(node);
+            if (string.IsNullOrWhiteSpace(node.InnerText) == true)
+            {
+                return TreatEmpty(node);
+            }
+
+            return base.Convert(node);
         }
 
-        private string TreatText(HtmlNode node)
+        public override string GetMarkdownContent(HtmlNode node)
         {
             // Prevent &lt; and &gt; from being converted to < and > as this will be interpreted as HTML by markdown
             string content = node.InnerText
@@ -48,7 +52,7 @@ namespace ReverseMarkdown.Converters
             }
 
             content = ReplaceNewlineChars(parent.Name, content);
-            content =  EscapeKeyChars(content);
+            content = EscapeKeyChars(content);
             content = PreserveKeyCharsWithinBackTicks(content);
 
             return content;

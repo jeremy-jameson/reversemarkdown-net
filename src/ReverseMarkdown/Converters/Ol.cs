@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
-    public class Ol : ConverterBase
+    public class Ol : BlockElementConverter
     {
         public Ol(Converter converter) : base(converter)
         {
@@ -24,16 +25,29 @@ namespace ReverseMarkdown.Converters
                 return node.OuterHtml;
             }
 
-            string prefixSuffix = Environment.NewLine;
+            return base.Convert(node);
+        }
 
-            // Prevent blank lines being inserted in nested lists
+        private bool IsNestedList(HtmlNode node)
+        {
+            Debug.Assert(node.Name == "ol" || node.Name == "ul");
+
+            // Return true if the specified list is a child of another list
             string parentName = node.ParentNode.Name.ToLowerInvariant();
-            if (parentName == "ol" || parentName == "ul")
-            {
-                prefixSuffix = "";
-            }
 
-            return $"{prefixSuffix}{TreatChildren(node)}{prefixSuffix}";
+            return (parentName == "ol" || parentName == "ul");
+        }
+
+        public override string GetMarkdownPrefix(HtmlNode node)
+        {
+            // Prevent blank lines being inserted in nested lists
+            return IsNestedList(node) ? string.Empty : Environment.NewLine;
+        }
+
+        public override string GetMarkdownSuffix(HtmlNode node)
+        {
+            // Prevent blank lines being inserted in nested lists
+            return IsNestedList(node) ? string.Empty : Environment.NewLine;
         }
     }
 }

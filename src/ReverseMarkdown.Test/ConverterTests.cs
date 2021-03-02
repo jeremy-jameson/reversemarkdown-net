@@ -1131,6 +1131,18 @@ namespace ReverseMarkdown.Test
             return CheckConversion(html);
         }
 
+        // Note: The following test fails in ReverseMarkdown v3.18.0 (due to
+        // string.Trim)
+        //
+        // In other words, GitHub issue #67 only changed the behavior with <b>
+        // content -- not <i> content
+        [Fact]
+        public Task WhenItalicTagContainsBRTag_ThenConvertToMarkdown()
+        {
+            var html = "test<i><br/>test</i>";
+            return CheckConversion(html);
+        }
+
         [Fact]
         public Task WhenAnchorTagContainsImgTag_LinkTextShouldNotBeEscaped()
         {

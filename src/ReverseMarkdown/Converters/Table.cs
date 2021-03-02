@@ -5,14 +5,14 @@ using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
-    public class Table : ConverterBase
+    public class Table : BlockElementConverter
     {
         public Table(Converter converter) : base(converter)
         {
             Converter.Register("table", this);
         }
 
-        public override string Convert(HtmlNode node)
+        public override string GetMarkdownPrefix(HtmlNode node)
         {
             // if table does not have a header row , add empty header row if set in config
             var useEmptyRowForHeader = this.Converter.Config.TableWithoutHeaderRowHandling ==
@@ -22,7 +22,7 @@ namespace ReverseMarkdown.Converters
                 ? EmptyHeader(node)
                 : string.Empty;
 
-            return $"{Environment.NewLine}{Environment.NewLine}{emptyHeaderRow}{TreatChildren(node)}{Environment.NewLine}";
+            return $"{Environment.NewLine}{Environment.NewLine}{emptyHeaderRow}";
         }
 
         private static bool HasNoTableHeaderRow(HtmlNode node)

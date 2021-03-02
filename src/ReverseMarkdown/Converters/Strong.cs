@@ -3,7 +3,7 @@ using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
-    public class Strong : ConverterBase
+    public class Strong : InlineElementConverter
     {
         public Strong(Converter converter) : base(converter)
         {
@@ -17,19 +17,28 @@ namespace ReverseMarkdown.Converters
 
         public override string Convert(HtmlNode node)
         {
-            var content = TreatChildren(node);
-            if (string.IsNullOrEmpty(content) || AlreadyBold(node))
+            var content = GetMarkdownContent(node);
+
+            if (string.IsNullOrWhiteSpace(content) || AlreadyBold(node))
             {
                 return content;
             }
-            else
-            {
-                var spaceSuffix = (node.NextSibling?.Name == "strong" || node.NextSibling?.Name == "b")
-                    ? " "
-                    : "";
 
-                return $"**{content}**{spaceSuffix}";
-            }
+            return base.Convert(node);
+        }
+
+        public override string GetMarkdownPrefix(HtmlNode node)
+        {
+            return "**";
+        }
+
+        public override string GetMarkdownSuffix(HtmlNode node)
+        {
+            var spaceSuffix = (node.NextSibling?.Name == "strong" || node.NextSibling?.Name == "b")
+                ? " "
+                : "";
+
+            return $"**{spaceSuffix}";
         }
 
         private static bool AlreadyBold(HtmlNode node)

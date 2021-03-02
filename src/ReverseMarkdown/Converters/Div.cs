@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
-    public class Div : ConverterBase
+    public class Div : BlockElementConverter
     {
         public Div(Converter converter) : base(converter)
         {
@@ -13,6 +11,17 @@ namespace ReverseMarkdown.Converters
         }
 
         public override string Convert(HtmlNode node)
+        {
+            // if there is a block child then ignore adding the newlines for div
+            if ((node.ChildNodes.Count == 1 && IsBlockTag(node.FirstChild.Name)))
+            {
+                return GetMarkdownContent(node);
+            }
+
+            return base.Convert(node);
+        }
+
+        public override string GetMarkdownContent(HtmlNode node)
         {
             var content = string.Empty;
 
@@ -28,22 +37,38 @@ namespace ReverseMarkdown.Converters
                 break;
             } while (true);
 
-            var blockTags = new List<string>
-            {
-                "pre",
-                "p",
-                "ol",
-                "oi",
-                "table"
-            };
+            return content;
+        }
 
-            // if there is a block child then ignore adding the newlines for div
-            if ((node.ChildNodes.Count == 1 && blockTags.Contains(node.FirstChild.Name)))
+        public override string GetMarkdownPrefix(HtmlNode node)
+        {
+            return $"{(Td.FirstNodeWithinCell(node) ? "" : Environment.NewLine)}";
+        }
+
+        public override string GetMarkdownSuffix(HtmlNode node)
+        {
+            return $"{(Td.LastNodeWithinCell(node) ? "" : Environment.NewLine)}";
+        }
+
+        private static bool IsBlockTag(string name)
+        {
+            switch (name)
             {
-                return content;
+                // Note: The following list is identical to what was in the code
+                // before
+                //
+                // TODO: Clean this up and add other HTML block elements as
+                // necessary (e.g. "ul")
+                case "pre":
+                case "p":
+                case "ol":
+                case "oi": // ??????????
+                case "table":
+                    return true;
+
+                default:
+                    return false;
             }
-
-            return $"{(Td.FirstNodeWithinCell(node) ? "" : Environment.NewLine)}{content}{(Td.LastNodeWithinCell(node) ? "" : Environment.NewLine)}";
         }
     }
 }

@@ -5,14 +5,14 @@ using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
-    public class Pre : ConverterBase
+    public class Pre : BlockElementConverter
     {
         public Pre(Converter converter) : base(converter)
         {
             Converter.Register("pre", this);
         }
 
-        public override string Convert(HtmlNode node)
+        public override string GetMarkdownContent(HtmlNode node)
         {
             var content = DecodeHtml(node.InnerText);
 
@@ -43,7 +43,12 @@ namespace ReverseMarkdown.Converters
                 content = indentation;
             }
 
-            return $"{Environment.NewLine}{Environment.NewLine}{fencedCodeStartBlock}{content}{Environment.NewLine}{fencedCodeEndBlock}{Environment.NewLine}";
+            return $"{fencedCodeStartBlock}{content}{Environment.NewLine}{fencedCodeEndBlock}";
+        }
+
+        public override string GetMarkdownPrefix(HtmlNode node)
+        {
+            return $"{Environment.NewLine}{Environment.NewLine}";
         }
 
         private string GetLanguage(HtmlNode node)

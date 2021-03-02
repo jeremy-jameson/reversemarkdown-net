@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace ReverseMarkdown.Converters
 {
-    public class Td : ConverterBase
+    public class Td : BlockElementConverter
     {
         public Td(Converter converter) : base(converter)
         {
@@ -16,12 +16,20 @@ namespace ReverseMarkdown.Converters
             }
         }
 
-        public override string Convert(HtmlNode node)
+        public override string GetMarkdownContent(HtmlNode node)
         {
-            var content = TreatChildren(node)
+            return base.GetMarkdownContent(node)
                 .Replace(Environment.NewLine, "<br>");
+        }
 
-            return $" {content} |";
+        public override string GetMarkdownPrefix(HtmlNode node)
+        {
+            return " ";
+        }
+
+        public override string GetMarkdownSuffix(HtmlNode node)
+        {
+            return " |";
         }
 
         /// <summary>

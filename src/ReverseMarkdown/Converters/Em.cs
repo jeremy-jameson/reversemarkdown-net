@@ -1,11 +1,9 @@
-﻿
-using System.Linq;
-
+﻿using System.Linq;
 using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
-    public class Em : ConverterBase
+    public class Em : InlineElementConverter
     {
         public Em(Converter converter) : base(converter)
         {
@@ -19,20 +17,28 @@ namespace ReverseMarkdown.Converters
 
         public override string Convert(HtmlNode node)
         {
-            var content = TreatChildren(node);
+            var content = GetMarkdownContent(node);
             
-            if (string.IsNullOrEmpty(content.Trim()) || AlreadyItalic(node))
+            if (string.IsNullOrWhiteSpace(content) || AlreadyItalic(node))
             {
                 return content;
             }
-            else
-            {
-                var spaceSuffix = (node.NextSibling?.Name == "i" || node.NextSibling?.Name == "em")
-                    ? " "
-                    : "";
 
-                return $"*{content.Trim()}*{spaceSuffix}";
-            }
+            return base.Convert(node);
+        }
+
+        public override string GetMarkdownPrefix(HtmlNode node)
+        {
+            return "*";
+        }
+
+        public override string GetMarkdownSuffix(HtmlNode node)
+        {
+            var spaceSuffix = (node.NextSibling?.Name == "i" || node.NextSibling?.Name == "em")
+                ? " "
+                : "";
+
+            return $"*{spaceSuffix}";
         }
 
         private bool AlreadyItalic(HtmlNode node)

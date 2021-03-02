@@ -1,19 +1,17 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-
 using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
-    public class Li : ConverterBase
+    public class Li : BlockElementConverter
     {
         public Li(Converter converter) : base(converter)
         {
             Converter.Register("li", this);
         }
 
-        public override string Convert(HtmlNode node)
+        public override string GetMarkdownContent(HtmlNode node)
         {
             // Standardize whitespace before inner lists so that the following are equivalent
             //   <li>Foo<ul><li>...
@@ -27,18 +25,26 @@ namespace ReverseMarkdown.Converters
             }
 
             var content = TreatChildren(node);
+
+            return content.Chomp();
+        }
+
+        public override string GetMarkdownPrefix(HtmlNode node)
+        {
             var indentationLevel = GetIndentationLevel(node);
             Debug.Assert(indentationLevel > 0);
             indentationLevel--; // no indentation for "first level" list items
 
             var indentation = GetIndentation(indentationLevel);
-            var prefix = PrefixFor(node);
+            var prefix = GetPrefixForListItem(node);
 
-            return $"{indentation}{prefix}{content.Chomp()}{Environment.NewLine}";
+            return $"{indentation}{prefix}";
         }
 
-        private string PrefixFor(HtmlNode node)
+        private string GetPrefixForListItem(HtmlNode node)
         {
+            Debug.Assert(node.Name == "li");
+
             if (node.ParentNode != null && node.ParentNode.Name == "ol")
             {
                 // index are zero based hence add one
