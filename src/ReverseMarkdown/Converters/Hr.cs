@@ -3,16 +3,16 @@ using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
-    public class Hr : ConverterBase
+    public class Hr : BlockElementConverter
     {
         public Hr(Converter converter) : base(converter)
         {
             Converter.Register("hr", this);
         }
 
-        public override string Convert(HtmlNode node)
+        public override string GetMarkdownContent(HtmlNode node)
         {
-            return $"{Environment.NewLine}* * *{Environment.NewLine}";
+            return "* * *";
         }
     }
 }

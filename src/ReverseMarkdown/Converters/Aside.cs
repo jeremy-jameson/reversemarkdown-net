@@ -1,9 +1,8 @@
-using System;
 using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
-    public class Aside : ConverterBase
+    public class Aside : BlockElementConverter
     {
         public Aside(Converter converter)
             : base(converter)
@@ -11,9 +10,9 @@ namespace ReverseMarkdown.Converters
             Converter.Register("aside", this);
         }
 
-        public override string Convert(HtmlNode node)
+        public override string GetMarkdownContent(HtmlNode node)
         {
-            return $"{Environment.NewLine}{TreatChildren(node).Trim()}{Environment.NewLine}";
+            return base.GetMarkdownContent(node).Trim();
         }
     }
 }

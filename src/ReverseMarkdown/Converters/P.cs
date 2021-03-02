@@ -1,25 +1,22 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
-    public class P : ConverterBase
+    public class P : BlockElementConverter
     {
         public P(Converter converter) : base(converter)
         {
             Converter.Register("p", this);
         }
 
-        public override string Convert(HtmlNode node) {
-            var indentation = IndentationFor(node);
-            var newlineAfter = NewlineAfter(node);
-
-            return $"{indentation}{TreatChildren(node).Trim()}{newlineAfter}";
+        public override string GetMarkdownContent(HtmlNode node)
+        {
+            return base.GetMarkdownContent(node).Trim();
         }
 
-        protected override string IndentationFor(HtmlNode node)
+        public override string GetMarkdownPrefix(HtmlNode node)
         {
             string parentName = node.ParentNode.Name.ToLowerInvariant();
 
@@ -38,7 +35,8 @@ namespace ReverseMarkdown.Converters
             return Td.FirstNodeWithinCell(node) ? "" : Environment.NewLine;
         }
 
-        private string NewlineAfter(HtmlNode node) {
+        public override string GetMarkdownSuffix(HtmlNode node)
+        {
             return Td.LastNodeWithinCell(node) ? "" : Environment.NewLine;
         }
     }

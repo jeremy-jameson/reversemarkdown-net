@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Linq;
-
 using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
-    public class Blockquote : ConverterBase
+    public class Blockquote : BlockElementConverter
     {
         public Blockquote(Converter converter) : base(converter)
         {
             Converter.Register("blockquote", this);
         }
 
-        public override string Convert(HtmlNode node)
+        public override string GetMarkdownContent(HtmlNode node)
         {
-            var content = TreatChildren(node).Trim();
+            var content = base.GetMarkdownContent(node).Trim();
 
             var prefix = IndentationFor(node) + "> ";
 
@@ -24,7 +23,12 @@ namespace ReverseMarkdown.Converters
             // join all the lines to a single line
             var result = lines.Aggregate(string.Empty, (curr, next) => curr + next);
 
-            return $"{Environment.NewLine}{Environment.NewLine}{result}{Environment.NewLine}";
+            return result;
+        }
+
+        public override string GetMarkdownPrefix(HtmlNode node)
+        {
+            return Environment.NewLine + Environment.NewLine;
         }
     }
 }

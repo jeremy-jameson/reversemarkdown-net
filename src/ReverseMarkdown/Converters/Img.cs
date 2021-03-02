@@ -1,14 +1,14 @@
 ﻿using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters {
-    public class Img : ConverterBase
+    public class Img : InlineElementConverter
     {
         public Img(Converter converter) : base(converter)
         {
             Converter.Register("img", this);
         }
 
-		public override string Convert(HtmlNode node)
+		public override string GetMarkdownContent(HtmlNode node)
 		{
 			var alt = node.GetAttributeValue("alt", string.Empty);
 			var src = node.GetAttributeValue("src", string.Empty);

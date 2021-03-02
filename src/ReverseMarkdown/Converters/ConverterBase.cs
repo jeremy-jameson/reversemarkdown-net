@@ -1,5 +1,4 @@
-﻿
-using System.Linq;
+﻿using System.Linq;
 using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
@@ -74,6 +73,28 @@ namespace ReverseMarkdown.Converters
             return GetIndentation(indentationLevel);
         }
 
-        public abstract string Convert(HtmlNode node);
+        public virtual string Convert(HtmlNode node)
+        {
+            var prefix = GetMarkdownPrefix(node);
+            var content = GetMarkdownContent(node);
+            var suffix = GetMarkdownSuffix(node);
+
+            return $"{prefix}{content}{suffix}";
+        }
+
+        public virtual string GetMarkdownContent(HtmlNode node)
+        {
+            return TreatChildren(node);
+        }
+
+        public virtual string GetMarkdownPrefix(HtmlNode node)
+        {
+            return string.Empty;
+        }
+
+        public virtual string GetMarkdownSuffix(HtmlNode node)
+        {
+            return string.Empty;
+        }
     }
 }

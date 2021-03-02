@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 
 namespace ReverseMarkdown.Converters {
-    public class A : ConverterBase
+    public class A : InlineElementConverter
     {
         public A(Converter converter)
             : base(converter)
@@ -11,7 +11,7 @@ namespace ReverseMarkdown.Converters {
             Converter.Register("a", this);
         }
 
-        public override string Convert(HtmlNode node)
+        public override string GetMarkdownContent(HtmlNode node)
         {
             var name = TreatChildren(node).Trim();
 
