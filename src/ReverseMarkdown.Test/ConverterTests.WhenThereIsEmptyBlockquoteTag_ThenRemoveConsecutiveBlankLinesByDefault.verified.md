@@ -1,3 +1,3 @@
-Empty blockquote: 
+Empty blockquote:
 
- Some additional text.
+Some additional text.

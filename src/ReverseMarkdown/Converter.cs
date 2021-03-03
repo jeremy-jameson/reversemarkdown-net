@@ -70,7 +70,7 @@ namespace ReverseMarkdown
                 root = root.SelectSingleNode("//body");
             }
 
-            _htmlFormatter.NormalizeWhitespace(root);
+            _htmlFormatter.RemoveInsignificantWhitespace(root);
 
             var result = Lookup(root.Name).Convert(root);
 
