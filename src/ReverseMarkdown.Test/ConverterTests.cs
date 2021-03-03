@@ -1314,7 +1314,7 @@ namespace ReverseMarkdown.Test
         #region Whitespace tests
 
         [Fact]
-        public Task When_BoldElementHasEmbeddedWhitespace_MarkdownPreservesWhitespace()
+        public Task When_BoldElementHasEmbeddedWhitespace_MarkdownHasNormalizedWhitespace()
         {
             var html = "<b>some\n\tbold text</b>";
             return CheckConversion(html);

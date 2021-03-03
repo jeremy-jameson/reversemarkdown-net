@@ -1,2 +1,0 @@
-**some
-	bold text**

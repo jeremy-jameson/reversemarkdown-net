@@ -18,6 +18,7 @@ namespace ReverseMarkdown
         // the formatter dependency to be specified using some other
         // mechanism in the future (e.g. dependency injection or perhaps
         // specifying a custom formatter via configuration).
+        private readonly IHtmlFormatter _htmlFormatter;
         private readonly IMarkdownFormatter _markdownFormatter;
 
         public Converter() : this(new Config()) {}
@@ -42,9 +43,11 @@ namespace ReverseMarkdown
             _dropTagsConverter = new Drop(this);
             _byPassTagsConverter = new ByPass(this);
 
-            // TODO: Should the formatter be configurable?
+            // TODO: Should the formatters be configurable?
             // Consider adding a Config property that callers could use to
-            // override with their own behavior
+            // override with their own behavior (e.g. to adjust whitespace
+            // within inline elements -- "<b> foo </b>" --> " <b>foo</b> ").
+            _htmlFormatter = new DefaultHtmlFormatter();
             _markdownFormatter = new DefaultMarkdownFormatter();
         }
 
@@ -66,6 +69,8 @@ namespace ReverseMarkdown
             {
                 root = root.SelectSingleNode("//body");
             }
+
+            _htmlFormatter.NormalizeWhitespace(root);
 
             var result = Lookup(root.Name).Convert(root);
 
