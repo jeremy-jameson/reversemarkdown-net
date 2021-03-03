@@ -40,20 +40,7 @@ namespace ReverseMarkdown
             }
             else
             {
-                // Theoretically, we should be able to normalize whitespace in
-                // every text node within the <body> element (or even the root
-                // <html> element). However, doing so causes a number of
-                // existing unit tests to fail -- in particular the ones that
-                // validate block elements embedded in tables are treated as
-                // expected when converting to pipe tables in Markdown.
-                //
-                //NormalizeWhitespaceInAllDescendantTextNodes(node);
-                //
-                // To avoid these issues (at least for the time being), only
-                // normalize whitespace in "specific" text nodes -- for example,
-                // starting out with simple, inline elements like <b>.
-
-                NormalizeWhitespaceInSpecificDescendantTextNodes(node);
+                NormalizeWhitespaceInAllDescendantTextNodes(node);
             }
         }
 
@@ -99,53 +86,45 @@ namespace ReverseMarkdown
             }
 
             // Never change the whitespace in preformatted (<pre>) content
-            if (textNode.Ancestors("pre").Any() == false)
+            if (textNode.Ancestors("pre").Any() == true)
             {
-                string normalizedText = NormalizeWhitespace(textNode.InnerHtml);
-
-                textNode.InnerHtml = normalizedText;
+                return;
             }
-        }
 
-        private static void NormalizeWhitespaceInSpecificDescendantTextNodes(
-            HtmlNode node)
-        {
-            var doc = node.OwnerDocument;
-
-            // Normalize whitespace in "inline" elements
+            // Theoretically, we should be able to normalize whitespace in every
+            // text node within the <body> element (or even the root <html>
+            // element) -- provided we skip preformatted (<pre>) content.
             //
-            // Start with just one inline element type to prove the approach
+            // However, doing so causes a number of existing unit tests to fail
+            // -- in particular the ones that test "funky" content embedded in
+            // tables. For example, converting a "plain" line break
+            // (i.e. "\r\n") to an HTML <br> element.
             //
-            // TODO: Add other "inline" elements and "block" elements (with
-            // corresponding tests)
+            // For the time being, do *not* normalize whitespace in tables.
+            //
+            // TODO: Normalize whitespace in tables and "fix" the tests
+            // accordingly (e.g. figure out why converting "plain" line breaks
+            // to HTML line breaks by default was considered necessary.
+            //
+            // For reference purposes, I believe the table in the following blog
+            // post is corrupted by the "plain" line break to HTML line break
+            // behavior in ReverseMarkdown:
+            //
+            // https://www.technologytoolbox.com/blog/jjameson/archive/2012/02/19/html-to-pdf-converters.aspx
+            //
+            // Related commit (essentially my hack around the ReverseMarkdown
+            // issue):
+            //
+            // https://github.com/jeremy-jameson/BlogML2Hugo/commit/0576f9809f39a622079c3bf0d21c8c1fef2a4cae
 
-            // Note that the normalize-space XPath function will trim leading
-            // and trailing whitespace. Consequently we will almost certainly
-            // process more text nodes than are technically necessary, but this
-            // approach is probably better than just "brute force" iterating
-            // over all elements (since this will exclude simple content like
-            // "<b>some bold text</b>").
-
-            NormalizeWhitespaceInTextNodes(
-                doc,
-                "//b[text() != normalize-space()]");
-        }
-
-        private static void NormalizeWhitespaceInTextNodes(
-            HtmlDocument doc,
-            string xpath)
-        {
-            var nodes = doc.DocumentNode.SelectNodes(xpath);
-
-            if (nodes != null)
+            if (textNode.Ancestors("table").Any() == true)
             {
-                foreach (var node in nodes)
-                {
-                    Debug.Assert(node.Name == "b");
-
-                    NormalizeWhitespaceInAllDescendantTextNodes(node);
-                }
+                return;
             }
+
+            string normalizedText = NormalizeWhitespace(textNode.InnerHtml);
+
+            textNode.InnerHtml = normalizedText;
         }
     }
 }

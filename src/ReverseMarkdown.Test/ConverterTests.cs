@@ -1221,7 +1221,7 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
-        public Task When_CodeContainsSpanWithExtraSpaces_Should_NotNormalizeSpaces()
+        public Task When_CodeContainsSpanWithExtraSpaces_Should_NormalizeSpaces()
         {
             var html = $"A JavaScript<code><span>    function  </span></code>...";
             return CheckConversion(html);
@@ -1338,6 +1338,27 @@ namespace ReverseMarkdown.Test
         public Task When_BoldElementHasVarietyOfWhitespace_MarkdownHasNormalizedWhitespace()
         {
             var html = "<b>some\n\tbold\n \ttext\n</b>";
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_ParagraphHasEmbeddedWhitespace_MarkdownHas3LinesWithNormalizedWhitespace()
+        {
+            var html = "<p>This is  \t \n a paragraph.</p>";
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_ParagraphHasLeadingWhitespace_MarkdownHas3LinesWithTrimmedWhitespace()
+        {
+            var html = "<p>  \t \n This is a paragraph.</p>";
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_ParagraphHasTrailingWhitespace_MarkdownHas3LinesWithTrimmedWhitespace()
+        {
+            var html = "<p>This is a paragraph.  \t \n </p>";
             return CheckConversion(html);
         }
 

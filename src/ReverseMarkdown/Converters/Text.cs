@@ -51,7 +51,6 @@ namespace ReverseMarkdown.Converters
                     break;
             }
 
-            content = ReplaceNewlineChars(parent.Name, content);
             content = EscapeKeyChars(content);
             content = PreserveKeyCharsWithinBackTicks(content);
 
@@ -91,16 +90,6 @@ namespace ReverseMarkdown.Converters
             var rx = new Regex("`.*?`");
 
             content = rx.Replace(content, p => p.Value.Replace(@"\*", "*").Replace(@"\_", "_"));
-
-            return content;
-        }
-
-        private static string ReplaceNewlineChars(string parentNodeName, string content)
-        {
-            if (parentNodeName != "p" && parentNodeName != "#document") return content;
-
-            content = content.Replace("\r\n", " ");
-            content = content.Replace("\n", " ");
 
             return content;
         }

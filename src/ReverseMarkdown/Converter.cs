@@ -14,8 +14,8 @@ namespace ReverseMarkdown
         private readonly IConverter _dropTagsConverter;
         private readonly IConverter _byPassTagsConverter;
 
-        // Use the IMarkdownFormatter interface to allow
-        // the formatter dependency to be specified using some other
+        // Use the IHtmlFormatter and IMarkdownFormatter interfaces to allow
+        // the formatter dependencies to be specified using some other
         // mechanism in the future (e.g. dependency injection or perhaps
         // specifying a custom formatter via configuration).
         private readonly IHtmlFormatter _htmlFormatter;
