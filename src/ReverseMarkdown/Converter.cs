@@ -57,6 +57,8 @@ namespace ReverseMarkdown
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
+            Cleaner.Tidy(doc);
+
             var root = doc.DocumentNode;
 
             // ensure to start from body and ignore head etc

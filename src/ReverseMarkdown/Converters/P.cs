@@ -23,9 +23,14 @@ namespace ReverseMarkdown.Converters
         {
             string parentName = node.ParentNode.Name.ToLowerInvariant();
 
+            if (parentName == "ol" || parentName == "ul")
+            {
+                throw new InvalidOperationException("Malformed list.");
+            }
+
             // If p follows a list item, add newline and indent it
             var length = node.Ancestors("ol").Count() + node.Ancestors("ul").Count();
-            bool parentIsList = parentName == "li" || parentName == "ol" || parentName == "ul";
+            bool parentIsList = parentName == "li";
             if (parentIsList && node.ParentNode.FirstChild != node)
                 return Environment.NewLine + (new string(' ', length * 4));
 
