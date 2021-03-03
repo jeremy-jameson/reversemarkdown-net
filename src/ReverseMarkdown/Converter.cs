@@ -14,6 +14,12 @@ namespace ReverseMarkdown
         private readonly IConverter _dropTagsConverter;
         private readonly IConverter _byPassTagsConverter;
 
+        // Use the IMarkdownFormatter interface to allow
+        // the formatter dependency to be specified using some other
+        // mechanism in the future (e.g. dependency injection or perhaps
+        // specifying a custom formatter via configuration).
+        private readonly IMarkdownFormatter _markdownFormatter;
+
         public Converter() : this(new Config()) {}
 
         public Converter(Config config)
@@ -35,6 +41,11 @@ namespace ReverseMarkdown
             _passThroughTagsConverter = new PassThrough(this);
             _dropTagsConverter = new Drop(this);
             _byPassTagsConverter = new ByPass(this);
+
+            // TODO: Should the formatter be configurable?
+            // Consider adding a Config property that callers could use to
+            // override with their own behavior
+            _markdownFormatter = new DefaultMarkdownFormatter();
         }
 
         public Config Config { get; }
@@ -55,6 +66,12 @@ namespace ReverseMarkdown
             }
 
             var result = Lookup(root.Name).Convert(root);
+
+            if (Config.RemoveMultipleConsecutiveBlankLines == true)
+            {
+                result = _markdownFormatter
+                    .RemoveMultipleConsecutiveBlankLines(result);
+            }
 
             return result;
         }

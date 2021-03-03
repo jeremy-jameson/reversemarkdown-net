@@ -341,7 +341,9 @@ namespace ReverseMarkdown.Test
         public Task WhenThereIsHeadingInsideTable_ThenIgnoreHeadingLevel()
         {
             var html = $"<table>{Environment.NewLine}<tr><th><h2>Heading <strong>text</strong></h2></th></tr>{Environment.NewLine}<tr><td>Content</td></tr>{Environment.NewLine}</table>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
@@ -355,6 +357,15 @@ namespace ReverseMarkdown.Test
         public Task WhenThereIsEmptyBlockquoteTag_ThenConvertToMarkdownBlockquote()
         {
             var html = "This text has <blockquote></blockquote>. This text appear after header.";
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
+        }
+
+        [Fact]
+        public Task WhenThereIsEmptyBlockquoteTag_ThenRemoveConsecutiveBlankLinesByDefault()
+        {
+            var html = "Empty blockquote: <blockquote></blockquote> Some additional text.";
             return CheckConversion(html);
         }
 
@@ -520,35 +531,49 @@ namespace ReverseMarkdown.Test
         public Task WhenThereIsUnorderedList_ThenConvertToMarkdownList()
         {
             var html = "This text has unordered list.<ul><li>Item1</li><li>Item2</li></ul>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
         public Task WhenThereIsUnorderedListAndBulletIsAsterisk_ThenConvertToMarkdownList()
         {
             var html = "This text has unordered list.<ul><li>Item1</li><li>Item2</li></ul>";
-            return CheckConversion(html, new Config {ListBulletChar = '*'});
+            return CheckConversion(
+                html,
+                new Config
+                {
+                    ListBulletChar = '*',
+                    RemoveMultipleConsecutiveBlankLines = false
+                });
         }
 
         [Fact]
         public Task WhenThereIsOrderedList_ThenConvertToMarkdownList()
         {
             var html = "This text has ordered list.<ol><li>Item1</li><li>Item2</li></ol>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
         public Task WhenThereIsOrderedListWithNestedUnorderedList_ThenConvertToMarkdownListWithNestedList()
         {
             var html = "This text has ordered list.<ol><li>OuterItem1<ul><li>InnerItem1</li><li>InnerItem2</li></ul></li><li>Item2</li></ol>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
         public Task WhenThereIsUnorderedListWithNestedOrderedList_ThenConvertToMarkdownListWithNestedList()
         {
             var html = "This text has ordered list.<ul><li>OuterItem1<ol><li>InnerItem1</li><li>InnerItem2</li></ol></li><li>Item2</li></ul>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
@@ -561,7 +586,9 @@ namespace ReverseMarkdown.Test
             html += $"    <li>Item3</li>{Environment.NewLine}";
             html += $"</ul>";
 
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
@@ -569,14 +596,18 @@ namespace ReverseMarkdown.Test
             WhenListItemTextContainsLeadingAndTrailingSpacesAndTabs_ThenConvertToMarkdownListItemWithSpacesAndTabsStripped()
         {
             var html = @"<ol><li>	    This is a text with leading and trailing spaces and tabs		</li></ol>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
         public Task WhenListContainsNewlineAndTabBetweenTagBorders_CleanupAndConvertToMarkdown()
         {
             var html = $"<ol>{Environment.NewLine}\t<li>{Environment.NewLine}\t\t<strong>Item1</strong></li>{Environment.NewLine}\t<li>{Environment.NewLine}\t\tItem2</li></ol>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
@@ -591,7 +622,9 @@ namespace ReverseMarkdown.Test
 	<li>
 		<p>Paragraph 3</p></li></ol>";
 
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
@@ -604,21 +637,27 @@ namespace ReverseMarkdown.Test
 	<li>Item2</li>
 </ol>";
 
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
         public Task When_OrderedListIsInTable_LeaveListAsHtml()
         {
             var html = "<table><tr><th>Heading</th></tr><tr><td><ol><li>Item1</li></ol></td></tr></table>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
         public Task When_UnorderedListIsInTable_LeaveListAsHtml()
         {
             var html = "<table><tr><th>Heading</th></tr><tr><td><ul><li>Item1</li></ul></td></tr></table>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
@@ -686,6 +725,7 @@ namespace ReverseMarkdown.Test
 
             var config = new Config
             {
+                RemoveMultipleConsecutiveBlankLines = false,
                 UnknownTags = Config.UnknownTagsOption.Bypass
             };
             return CheckConversion(html, config);
@@ -699,6 +739,7 @@ namespace ReverseMarkdown.Test
                 "<table><tr><td>data1</td><td>data2</td><td>data3</td></tr><tr><td>data4</td><td>data5</td><td>data6</td></tr></table>";
             var config = new Config
             {
+                RemoveMultipleConsecutiveBlankLines = false,
                 UnknownTags = Config.UnknownTagsOption.Bypass,
                 TableWithoutHeaderRowHandling = Config.TableWithoutHeaderRowHandlingOption.EmptyRow
             };
@@ -713,6 +754,7 @@ namespace ReverseMarkdown.Test
                 "<table><colgroup><col><col><col></colgroup><tr><td>data1</td><td>data2</td><td>data3</td></tr><tr><td>data4</td><td>data5</td><td>data6</td></tr></table>";
             var config = new Config
             {
+                RemoveMultipleConsecutiveBlankLines = false,
                 UnknownTags = Config.UnknownTagsOption.Bypass,
                 // TableWithoutHeaderRowHandling = Config.TableWithoutHeaderRowHandlingOption.Default - this is default
             };
@@ -726,6 +768,7 @@ namespace ReverseMarkdown.Test
                 $"<table><tr><th>col1</th><th>col2</th><th>col3</th></tr><tr><td>data line1{Environment.NewLine}line2</td><td>data2</td><td>data3</td></tr></table>";
             var config = new Config
             {
+                RemoveMultipleConsecutiveBlankLines = false,
                 UnknownTags = Config.UnknownTagsOption.Bypass
             };
             return CheckConversion(html, config);
@@ -735,7 +778,9 @@ namespace ReverseMarkdown.Test
         public Task WhenTable_CellContainsParagraph_AddBrThenConvertToGFMTable()
         {
             var html = $"<table><tr><th>col1</th></tr><tr><td><p>line1</p><p>line2</p></td></tr></table>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
@@ -745,6 +790,7 @@ namespace ReverseMarkdown.Test
             var config = new Config
             {
                 GithubFlavored = true,
+                RemoveMultipleConsecutiveBlankLines = false
             };
             return CheckConversion(html, config);
         }
@@ -756,6 +802,7 @@ namespace ReverseMarkdown.Test
             var config = new Config
             {
                 GithubFlavored = true,
+                RemoveMultipleConsecutiveBlankLines = false
             };
             return CheckConversion(html, config);
         }
@@ -767,6 +814,7 @@ namespace ReverseMarkdown.Test
             var config = new Config
             {
                 GithubFlavored = true,
+                RemoveMultipleConsecutiveBlankLines = false
             };
             return CheckConversion(html, config);
         }
@@ -778,6 +826,7 @@ namespace ReverseMarkdown.Test
             var config = new Config
             {
                 GithubFlavored = true,
+                RemoveMultipleConsecutiveBlankLines = false,
                 TableWithoutHeaderRowHandling = Config.TableWithoutHeaderRowHandlingOption.EmptyRow,
             };
             return CheckConversion(html, config);
@@ -800,7 +849,8 @@ namespace ReverseMarkdown.Test
             var html = "<pre>var test = 'hello world';</pre>";
             var config = new Config
             {
-                GithubFlavored = true
+                GithubFlavored = true,
+                RemoveMultipleConsecutiveBlankLines = false
             };
             return CheckConversion(html, config);
         }
@@ -811,7 +861,8 @@ namespace ReverseMarkdown.Test
             var html = @"<pre class=""brush: python;"">var test = 'hello world';</pre>";
             var config = new Config
             {
-                GithubFlavored = true
+                GithubFlavored = true,
+                RemoveMultipleConsecutiveBlankLines = false
             };
             return CheckConversion(html, config);
         }
@@ -822,7 +873,8 @@ namespace ReverseMarkdown.Test
             var html = @"<div class=""highlight highlight-source-csharp""><pre>var test = ""hello world"";</pre></div>";
             var config = new Config
             {
-                GithubFlavored = true
+                GithubFlavored = true,
+                RemoveMultipleConsecutiveBlankLines = false
             };
             return CheckConversion(html, config);
         }
@@ -833,7 +885,8 @@ namespace ReverseMarkdown.Test
             var html = @"<pre><code class=""hljs language-csharp"">var test = ""hello world"";</code></pre>";
             var config = new Config
             {
-                GithubFlavored = true
+                GithubFlavored = true,
+                RemoveMultipleConsecutiveBlankLines = false
             };
             return CheckConversion(html, config);
         }
@@ -844,7 +897,8 @@ namespace ReverseMarkdown.Test
             var html = @"<pre class=""highlight-python"">var test = 'hello world';</pre>";
             var config = new Config
             {
-                GithubFlavored = true
+                GithubFlavored = true,
+                RemoveMultipleConsecutiveBlankLines = false
             };
             return CheckConversion(html, config);
         }
@@ -921,6 +975,7 @@ namespace ReverseMarkdown.Test
             var config = new Config
             {
                 GithubFlavored = true,
+                RemoveMultipleConsecutiveBlankLines = false
             };
             return CheckConversion(html, config);
         }
@@ -951,44 +1006,54 @@ namespace ReverseMarkdown.Test
         public Task WhenTableCellsWithP_ThenDoNotAddNewlines()
         {
             var html = "<html><body><table><tbody><tr><td><p>col1</p></td><td><p>col2</p></td></tr><tr><td><p>data1</p></td><td><p>data2</p></td></tr></tbody></table></body></html>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
         public Task WhenTableCellsWithDiv_ThenDoNotAddNewlines()
         {
             var html = "<html><body><table><tbody><tr><td><div>col1</div></td><td><div>col2</div></td></tr><tr><td><div>data1</div></td><td><div>data2</div></td></tr></tbody></table></body></html>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
         public Task WhenTableCellsWithPWithMarkupNewlines_ThenTrimExcessNewlines()
         {
             var html = $"<html><body><table><tbody>{Environment.NewLine}\t<tr>{Environment.NewLine}\t\t<td>{Environment.NewLine}\t\t\t<p>{Environment.NewLine}col1{Environment.NewLine}</p>{Environment.NewLine}\t\t</td>{Environment.NewLine}\t<tr>{Environment.NewLine}\t\t<td>{Environment.NewLine}\t\t\t<p>{Environment.NewLine}data1{Environment.NewLine}</p>{Environment.NewLine}\t\t</td>\t</tr></tbody></table></body></html>";
-
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
         public Task WhenTableCellsWithP_ThenNoNewlines()
         {
             var html = $"<table><tr><td><p>data1</p></td></tr></table>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
         public Task WhenTableCellsWithMultipleP_ThenNoNewlines()
         {
             var html = "<table><tr><td><p>p1</p><p>p2</p></td></tr></table>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
         public Task WhenTableCellsWithDataAndP_ThenNewlineBeforeP()
         {
             var html = $"<table><tr><td>data1<p>p</p></td></tr></table>";
-
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact(Skip = "Issue 61. Unclosed CDATA tags are invalid and HtmlAgilityPack won't parse it correctly. Browsers doesn't parse them correctly too.")]
@@ -1048,7 +1113,8 @@ namespace ReverseMarkdown.Test
             var config = new Config
             {
                 GithubFlavored = true,
-                DefaultCodeBlockLanguage = "csharp"
+                DefaultCodeBlockLanguage = "csharp",
+                RemoveMultipleConsecutiveBlankLines = false
             };
             return CheckConversion(html, config);
         }
@@ -1057,7 +1123,9 @@ namespace ReverseMarkdown.Test
         public Task When_PRE_With_Parent_DIV_And_Non_GitHubFlavored_Config_FirstLine_CodeBlock_SpaceIndent_Should_Be_Retained()
         {
             var html = @"<div><pre>var test = ""hello world"";</pre></div>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
@@ -1085,7 +1153,9 @@ namespace ReverseMarkdown.Test
         public Task When_Table_Within_List_Should_Be_Indented()
         {
             var html = $"<ol><li>Item1</li><li>Item2<table><tr><th>col1</th><th>col2</th><th>col3</th></tr><tr><td>data1</td><td>data2</td><td>data3</td></tr></table></li><li>Item3</li></ol>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
@@ -1125,7 +1195,9 @@ namespace ReverseMarkdown.Test
         public Task When_PreTag_Contains_IndentedFirstLine_Should_PreserveIndentation()
         {
             var html = "<pre><code>    function foo {</code></pre>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
@@ -1135,7 +1207,8 @@ namespace ReverseMarkdown.Test
 
             var config = new Config
             {
-                GithubFlavored = true
+                GithubFlavored = true,
+                RemoveMultipleConsecutiveBlankLines = false
             };
             return CheckConversion(html, config);
         }
@@ -1144,7 +1217,9 @@ namespace ReverseMarkdown.Test
         public Task When_PreTag_Within_List_Should_Be_Indented()
         {
             var html = $"<ol><li>Item1</li><li>Item2 <pre> test<br>{Environment.NewLine}  test</pre></li><li>Item3</li></ol>";
-            return CheckConversion(html);
+            return CheckConversion(
+                html,
+                new Config { RemoveMultipleConsecutiveBlankLines = false });
         }
 
         [Fact]
@@ -1155,7 +1230,8 @@ namespace ReverseMarkdown.Test
 
             var config = new Config
             {
-                GithubFlavored = true
+                GithubFlavored = true,
+                RemoveMultipleConsecutiveBlankLines = false
             };
             return CheckConversion(html, config);
         }
