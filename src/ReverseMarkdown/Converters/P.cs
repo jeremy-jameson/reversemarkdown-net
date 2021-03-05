@@ -13,7 +13,9 @@ namespace ReverseMarkdown.Converters
 
         public override string GetMarkdownContent(HtmlNode node)
         {
-            return base.GetMarkdownContent(node).Trim();
+            var markdown = base.GetMarkdownContent(node).Trim();
+
+            return Converter.TextFormatter.WrapText(markdown);
         }
 
         public override string GetMarkdownPrefix(HtmlNode node)

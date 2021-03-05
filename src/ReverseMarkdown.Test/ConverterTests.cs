@@ -1027,10 +1027,28 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
-        public Task When_TextWithinParagraphContainsNewlineChars_ConvertNewlineCharsToSpace()
+        public Task When_LongParagraphTextWithNewlines_ConvertToSpacesAndWrapLinesAt80Characters()
         {
             // note that the string also has a tab space
             var html = $"<p>This service will be{Environment.NewLine}temporarily unavailable due to planned maintenance{Environment.NewLine}from 02:00-04:00 on 30/01/2020</p>";
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_LongBlockquoteWithMultipleParagraphs_ShouldNotWrap()
+        {
+            // Real world scenario where wrapping a <blockquote> resulted in
+            // unexpected line break
+            var html =
+@"<blockquote class='note'>
+    <div class='noteTitle'>
+	    <strong>Note</strong></div>
+    <div>
+        <p>You can download these scripts from my Toolbox repository on GitHub:</p>
+        <p><a href='https://github.com/jeremy-jameson/Toolbox'>https://github.com/jeremy-jameson/Toolbox</a></p>
+    </div>
+</blockquote>";
+
             return CheckConversion(html);
         }
 

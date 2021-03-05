@@ -14,12 +14,13 @@ namespace ReverseMarkdown
         private readonly IConverter _dropTagsConverter;
         private readonly IConverter _byPassTagsConverter;
 
-        // Use the IHtmlFormatter and IMarkdownFormatter interfaces to allow
-        // the formatter dependencies to be specified using some other
-        // mechanism in the future (e.g. dependency injection or perhaps
-        // specifying a custom formatter via configuration).
+        // Use the formatter interfaces to allow the formatter dependencies to
+        // be specified using some other mechanism in the future (e.g.
+        // dependency injection or perhaps specifying a custom formatter via
+        // configuration).
         private readonly IHtmlFormatter _htmlFormatter;
         private readonly IMarkdownFormatter _markdownFormatter;
+        private readonly ITextFormatter _textFormatter;
 
         public Converter() : this(new Config()) {}
 
@@ -49,9 +50,12 @@ namespace ReverseMarkdown
             // within inline elements -- "<b> foo </b>" --> " <b>foo</b> ").
             _htmlFormatter = new DefaultHtmlFormatter();
             _markdownFormatter = new DefaultMarkdownFormatter();
+            _textFormatter = (ITextFormatter) _markdownFormatter;
         }
 
         public Config Config { get; }
+
+        public ITextFormatter TextFormatter { get { return _textFormatter; } }
 
         public string Convert(string html)
         {
