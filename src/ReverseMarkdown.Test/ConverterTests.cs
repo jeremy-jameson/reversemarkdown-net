@@ -1298,5 +1298,23 @@ namespace ReverseMarkdown.Test
             var html = $"<em>block1</em><em>block2</em><i>block3</i><em>block4</em>";
             return CheckConversion(html);
         }
+
+        #region Whitespace tests
+
+        [Fact]
+        public Task When_BoldElementHasEmbeddedWhitespace_MarkdownPreservesWhitespace()
+        {
+            var html = "<b>some\n\tbold text</b>";
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_PreElementHasEmbeddedWhitespace_MarkdownPreservesWhitespace()
+        {
+            var html = "<pre>function foo {\n\t...</pre>";
+            return CheckConversion(html);
+        }
+
+        #endregion
     }
 }
