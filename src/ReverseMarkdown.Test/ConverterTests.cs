@@ -369,6 +369,38 @@ namespace ReverseMarkdown.Test
             return CheckConversion(html);
         }
 
+        // Reference: https://www.markdownguide.org/basic-syntax/#blockquotes
+        [Fact]
+        public Task WhenThereIsBlockquoteInList_ThenConvertToIndentedBlockquote()
+        {
+            var html =
+"<ul>"
+    + "<li>This is the first list item.</li>"
+    + "<li>Here's the second list item."
+        + "<blockquote>A blockquote would look great below the second list item.</blockquote>"
+    + "</li>"
+    + "<li>And here's the third list item.</li>"
++ "</ul>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task WhenThereIsBlockquoteAndOtherTextInList_ThenConvertToIndentedContent()
+        {
+            var html =
+@"<ul>"
+    + "<li>Item 1</li>"
+    + "<li>Some famous quote:"
+        + "<blockquote>Imagine a famous quote here.</blockquote>"
+        + "<p>-- some content after the blockquote</p>"
+    + "</li>"
+    + "<li>Item 3</li>"
++ "</ul>";
+
+            return CheckConversion(html);
+        }
+
         [Fact]
         public Task WhenThereIsParagraphTag_ThenConvertToMarkdownDoubleLineBreakBeforeAndAfter()
         {
@@ -581,8 +613,8 @@ namespace ReverseMarkdown.Test
         {
             var html = $"<ul>{Environment.NewLine}    ";
             html += $"    <li>OuterItem1{Environment.NewLine}        <ol>{Environment.NewLine}            <li>InnerItem1</li>{Environment.NewLine}        </ol>{Environment.NewLine}    </li>{Environment.NewLine}";
-            html += $"    <li>Item2</li>{Environment.NewLine}";
-            html += $"    <ol>{Environment.NewLine}        <li>InnerItem2</li>{Environment.NewLine}    </ol>{Environment.NewLine}";
+            html += $"    <li>Item2{Environment.NewLine}";
+            html += $"    <ol>{Environment.NewLine}        <li>InnerItem2</li>{Environment.NewLine}    </ol>{Environment.NewLine}    </li>{Environment.NewLine}";
             html += $"    <li>Item3</li>{Environment.NewLine}";
             html += $"</ul>";
 
