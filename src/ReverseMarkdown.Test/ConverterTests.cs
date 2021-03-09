@@ -1053,6 +1053,16 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task When_LongHugoShortcode_ShouldNotWrap()
+        {
+            var html = "<p>{{< figure"
++ " src=\"https://assets.technologytoolbox.com/blog/jjameson/Images/My-System/Taskbar-Shortcuts-301x96.jpg\""
++ " alt='Taskbar Shortcuts' height='96' width='301' title='Figure 1 - Taskbar Shortcuts' >}}</p>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
         public Task WhenTableCellsWithP_ThenDoNotAddNewlines()
         {
             var html = "<html><body><table><tbody><tr><td><p>col1</p></td><td><p>col2</p></td></tr><tr><td><p>data1</p></td><td><p>data2</p></td></tr></tbody></table></body></html>";

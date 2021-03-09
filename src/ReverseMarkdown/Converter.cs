@@ -49,7 +49,7 @@ namespace ReverseMarkdown
             // override with their own behavior (e.g. to adjust whitespace
             // within inline elements -- "<b> foo </b>" --> " <b>foo</b> ").
             _htmlFormatter = new DefaultHtmlFormatter();
-            _markdownFormatter = new DefaultMarkdownFormatter();
+            _markdownFormatter = new HugoMarkdownFormatter();
             _textFormatter = (ITextFormatter) _markdownFormatter;
         }
 
