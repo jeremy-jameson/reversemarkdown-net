@@ -159,7 +159,21 @@ namespace ReverseMarkdown.Test
         {
             var text = "foo bar {{< gist spf13 7896402 >}} foobar";
             var expected = new string[] { "foo", "bar",
-                "{{< gist spf13 7896402 >}}",  "foobar" };
+                "{{<", "gist", "spf13", "7896402 >}}", "foobar" };
+
+            ITextFormatter formatter = new HugoMarkdownFormatter();
+
+            var actual = formatter.ParseChunks(text);
+
+            Assert.Equal<string>(expected, actual);
+        }
+
+        [Fact]
+        public void ParseChunks_WithHugoShortcodeWithQuotes()
+        {
+            var text = "{{< kbd \"stsadm -o enumsites\" >}}";
+            var expected = new string[] {
+                "{{<", "kbd", "\"stsadm -o enumsites\" >}}" };
 
             ITextFormatter formatter = new HugoMarkdownFormatter();
 
@@ -171,8 +185,38 @@ namespace ReverseMarkdown.Test
         [Fact]
         public void ParseChunks_WithHugoShortcodeWithQuotesInsideQuotes()
         {
-            var text = "\"{{< kbd \"stsadm - o enumsites\" >}}\"";
-            var expected = new string[] { text };
+            var text = "\"{{< kbd \"stsadm -o enumsites\" >}}\"";
+            var expected = new string[] {
+                "\"{{<", "kbd", "\"stsadm -o enumsites\" >}}\"" };
+
+            ITextFormatter formatter = new HugoMarkdownFormatter();
+
+            var actual = formatter.ParseChunks(text);
+
+            Assert.Equal<string>(expected, actual);
+        }
+
+        [Fact]
+        public void ParseChunks_WithHugoShortcodeWithNamedParameter()
+        {
+            var text = "{{< figure src='http://example.com/img.png' >}}";
+
+            var expected = new string[] {
+                "{{<", "figure", "src='http://example.com/img.png' >}}" };
+
+            ITextFormatter formatter = new HugoMarkdownFormatter();
+
+            var actual = formatter.ParseChunks(text);
+
+            Assert.Equal<string>(expected, actual);
+        }
+
+        [Fact]
+        public void ParseChunks_WithHugoShortcodeWrappedInPunctuation()
+        {
+            var text = "\"({{< gist spf13 7896402 >}})\"";
+            var expected = new string[] {
+                "\"({{<", "gist", "spf13", "7896402 >}})\"" };
 
             ITextFormatter formatter = new HugoMarkdownFormatter();
 
@@ -189,8 +233,8 @@ namespace ReverseMarkdown.Test
                 + " {{< instagram BWNjjyYFxVx hidecaption >}}";
 
             var expected = new string[] { "foo", "bar",
-                "{{< gist spf13 7896402 >}}",
-                "{{< instagram BWNjjyYFxVx hidecaption >}}"};
+                "{{<", "gist", "spf13", "7896402 >}}",
+                "{{<", "instagram", "BWNjjyYFxVx", "hidecaption >}}"};
 
             ITextFormatter formatter = new HugoMarkdownFormatter();
 
@@ -208,7 +252,7 @@ namespace ReverseMarkdown.Test
 
             var expected = new string[] { "foo", "bar",
                 "![Example image](http://example.com/img.png)",
-                "{{< gist spf13 7896402 >}}" };
+                "{{<", "gist", "spf13", "7896402 >}}" };
 
             ITextFormatter formatter = new HugoMarkdownFormatter();
 
