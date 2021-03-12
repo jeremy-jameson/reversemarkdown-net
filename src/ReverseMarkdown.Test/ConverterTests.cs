@@ -1414,6 +1414,15 @@ $"<blockquote><p>{__wrapLineTestContentWith80Bytes}</p></blockquote>";
         }
 
         [Fact]
+        public Task When_BlockquoteWith80Bytes_ShouldWrapAt80Characters()
+        {
+            var html =
+$"<blockquote>{__wrapLineTestContentWith80Bytes}</blockquote>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
         public Task When_NestedBlockquotes_ShouldWrapAt80Characters()
         {
             var html =
