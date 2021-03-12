@@ -33,7 +33,7 @@ namespace ReverseMarkdown.Converters
                     continue;
                 }
 
-                content = TreatChildren(node);
+                content = base.GetMarkdownContent(node);
                 break;
             } while (true);
 

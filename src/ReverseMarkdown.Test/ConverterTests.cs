@@ -1423,6 +1423,40 @@ $"<blockquote>{__wrapLineTestContentWith80Bytes}</blockquote>";
         }
 
         [Fact]
+        public Task When_DivWith160Bytes_ShouldWrapAt80Characters()
+        {
+            var html =
+$"<div>{__wrapLineTestContentWith160Bytes}</div>";
+
+            return CheckConversion(html);
+        }
+ 
+        [Fact] 
+        public Task When_DivWithLongCodeComment_ShouldNotWrap() 
+        { 
+            var html = 
+"<div>Sample code with long comment:" 
+    + $"<pre><code>// {__wrapLineTestContentWith80Bytes}</code></pre>" 
++ "</div>"; 
+ 
+            return CheckConversion(html); 
+        } 
+ 
+        [Fact] 
+        public Task When_DivWithLongTableCell_ShouldNotWrap() 
+        { 
+            var html = 
+"<div>Sample table with long cell:" 
+    + "<table>" 
+        + "<tr><td>Column 1</td></tr>" 
+        + $"<tr><td>{__wrapLineTestContentWith80Bytes}</td></tr>" 
+    + "</table>" 
++ "</div>"; 
+ 
+            return CheckConversion(html); 
+        } 
+
+        [Fact]
         public Task When_NestedBlockquotes_ShouldWrapAt80Characters()
         {
             var html =

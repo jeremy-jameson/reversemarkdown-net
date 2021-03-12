@@ -14,12 +14,28 @@ namespace ReverseMarkdown.Converters
         {
             var markdown = base.GetMarkdownContent(node);
 
-            if (node.Name == "blockquote"
+            if (node.Name == "pre"
+                || node.Ancestors("pre").Any() == true
+                || node.Descendants("pre").Any() == true)
+            {
+                // Never trim or wrap text in preformatted content
+            }
+            else if (node.Descendants("table").Any() == true)
+            {
+                // Never trim or wrap text in block element that contains a
+                // table (e.g. "<div>...<table>...</table></div>")
+            }
+            else if (node.Name == "blockquote"
+                || node.Name == "div"
                 || node.Name == "p")
             {
                 var wrapLineLength = GetWrapLineLength(node);
 
-                markdown = markdown.Trim();
+                if (node.Name != "div")
+                {
+                    markdown = markdown.Trim();
+                }
+
                 markdown = Converter.TextFormatter.WrapText(
                     markdown,
                     wrapLineLength);
