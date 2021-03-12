@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace ReverseMarkdown.Converters
@@ -27,6 +28,7 @@ namespace ReverseMarkdown.Converters
             }
             else if (node.Name == "blockquote"
                 || node.Name == "div"
+                || node.Name == "li"
                 || node.Name == "p")
             {
                 var wrapLineLength = GetWrapLineLength(node);
@@ -69,7 +71,12 @@ namespace ReverseMarkdown.Converters
             var blockquoteIndentation =
                 blockquoteIndentationLevel * ("> ".Length);
 
-            var listIndentation = node.Ancestors("li").Count() * 4;
+            var listIndentationLevel =
+                node.AncestorsAndSelf("li")
+                    .Where(x => x.Name == "li")
+                    .Count();
+
+            var listIndentation = listIndentationLevel * 4;
 
             return (80 - blockquoteIndentation - listIndentation);
         }

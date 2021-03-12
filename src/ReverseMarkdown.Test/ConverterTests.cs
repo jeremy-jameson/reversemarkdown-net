@@ -1490,6 +1490,26 @@ $"<ul><li><p>{__wrapLineTestContentWith80Bytes}</p><li></ul>";
         }
 
         [Fact]
+        public Task When_ListItemWith80Bytes_ShouldWrapAt80Characters()
+        {
+            var html =
+$"<ul><li>{__wrapLineTestContentWith80Bytes}<li></ul>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_NestedListItemWith80Bytes_ShouldWrapAt80Characters()
+        {
+            var html =
+"<ul><li>Nested list:"
+    + $"<ul><li>{__wrapLineTestContentWith80Bytes}</li></ul>"
++ "</li></ul>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
         public Task When_NestedListWith80ByteParagraph_ShouldWrapAt80Characters()
         {
             var html =

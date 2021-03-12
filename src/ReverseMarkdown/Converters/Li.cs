@@ -27,7 +27,9 @@ namespace ReverseMarkdown.Converters
 
             RemoveInsignificantWhitespace(node);
 
-            var content = TreatChildren(node).TrimStart();
+            var content = base.GetMarkdownContent(node);
+            
+            content = content.TrimStart();
 
             // Note: Indentation level is *always* 1.
             //
