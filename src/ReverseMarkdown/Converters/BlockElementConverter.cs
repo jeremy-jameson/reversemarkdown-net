@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 
 namespace ReverseMarkdown.Converters
 {
@@ -71,14 +72,19 @@ namespace ReverseMarkdown.Converters
             var blockquoteIndentation =
                 blockquoteIndentationLevel * ("> ".Length);
 
-            var listIndentationLevel =
-                node.AncestorsAndSelf("li")
-                    .Where(x => x.Name == "li")
-                    .Count();
+            var listIndentation = new StringBuilder();
 
-            var listIndentation = listIndentationLevel * 4;
+            node.AncestorsAndSelf("li")
+                .Where(x => x.Name == "li")
+                .ToList()
+                .ForEach(listItemNode =>
+                {
+                    var listItemPrefix = GetMarkdownPrefixForListItem(listItemNode);
 
-            return (80 - blockquoteIndentation - listIndentation);
+                    listIndentation.Append(new string(' ', listItemPrefix.Length));
+                });
+
+            return (80 - blockquoteIndentation - listIndentation.Length);
         }
     }
 }

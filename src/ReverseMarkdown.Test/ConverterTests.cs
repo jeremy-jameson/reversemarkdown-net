@@ -700,6 +700,67 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task WhenListContainsTenItems_IndentTenthItemChildrenOneMoreSpace()
+        {
+            var html =
+@"<ol>
+	<li>Item 1</li>
+	<li>Item 2</li>
+	<li>Item 3</li>
+	<li>Item 4</li>
+	<li>Item 5</li>
+	<li>Item 6</li>
+	<li>Item 7</li>
+	<li>Item 8</li>
+	<li>Item 9
+        <ol><li>Item 9.1</li></ol>
+    </li>
+	<li>Item 10
+        <ol><li>Item 10.1</li></ol>
+    </li>
+</ol>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_DeepNestedLists_ThenConvertToIndentedMarkdown()
+        {
+            var html =
+@"<ul>
+<li><strong>Computer Configuration</strong> 
+<ul>
+<li><strong>Policies</strong> 
+<ul>
+<li><strong>Windows Settings</strong> 
+<ul>
+<li><strong>Security Settings</strong> 
+<ul>
+<li><strong>Windows Firewall with Advanced Security</strong> 
+<ul>
+<li><strong>Inbound Rules</strong> 
+<ul>
+<li><strong>Remote Desktop (TCP-In)</strong> 
+<ul>
+<li><strong>Enabled: Yes</strong></li>
+<li><strong>Action: Allow</strong></li></ul></li></ul></li></ul></li></ul></li></ul></li>
+<li><strong>Administrative Templates</strong> 
+<ul>
+<li><strong>Windows Components</strong> 
+<ul>
+<li><strong>Terminal Services</strong> 
+<ul>
+<li><strong>Terminal Server</strong> 
+<ul>
+<li><strong>Connections</strong> 
+<ul>
+<li><strong>Allow users to connect remotely using Terminal Services: Enabled</strong></li>
+</ul></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
         public Task Check_Converter_With_Unknown_Tag_ByPass_Option()
         {
             var html = "<unknown-tag>text in unknown tag</unknown-tag>";

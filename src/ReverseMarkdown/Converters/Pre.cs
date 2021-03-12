@@ -38,7 +38,14 @@ namespace ReverseMarkdown.Converters
             if (string.IsNullOrEmpty(content)
                 && Converter.Config.GithubFlavored == false)
             {
-                content = IndentationFor(node) + "    ";
+                content = "    ";
+
+                var listItemNode = node.Ancestors("li").FirstOrDefault();
+
+                if (listItemNode != null)
+                {
+                    content += GetListItemIndentation(node);
+                }
             }
 
             return $"{fencedCodeStartBlock}{content}{Environment.NewLine}{fencedCodeEndBlock}";

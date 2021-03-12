@@ -31,23 +31,8 @@ namespace ReverseMarkdown.Converters
             
             content = content.TrimStart();
 
-            // Note: Indentation level is *always* 1.
-            //
-            // Indentation for "nested" lists is achieved by having each
-            // containing <li> element indent all of its children. For example,
-            // consider the following HTML:
-            //
-            //   <ul>
-            //     <li>Outer list item
-            //       <ul><li>Inner list item</li></ul>
-            //     </li>
-            //   </ul>
-            //
-            // The "Inner list item" is indented the first time when converting
-            // the "inner" <li> element and subsequently indented a second
-            // time when converting the "outer" <li> element.
-
-            var indentation = GetIndentation(1);
+            var indentation = GetListItemIndentation(node);
+            Debug.Assert(indentation.Length >= 2);
 
             content = Converter.TextFormatter.IndentLines(
                 content, indentation, indentBlankLines: false);
@@ -59,16 +44,7 @@ namespace ReverseMarkdown.Converters
         {
             Debug.Assert(node.Name == "li");
 
-            if (node.ParentNode != null && node.ParentNode.Name == "ol")
-            {
-                // index are zero based hence add one
-                var index = node.ParentNode.SelectNodes("./li").IndexOf(node) + 1;
-                return $"{index}. ";
-            }
-            else
-            {
-                return $"{Converter.Config.ListBulletChar} ";
-            }
+            return base.GetMarkdownPrefixForListItem(node);
         }
 
         private static void RemoveInsignificantWhitespace(HtmlNode node)
