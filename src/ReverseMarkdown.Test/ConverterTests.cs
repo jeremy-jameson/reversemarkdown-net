@@ -1425,6 +1425,18 @@ $"<blockquote><p>{__wrapLineTestContentWith80Bytes}</p></blockquote>";
             return CheckConversion(html);
         }
 
+        [Fact]
+        public Task When_TableWith160ByteParagraph_ShouldNotWrap()
+        {
+            var html =
+"<table>"
+    + "<tr><td>Column 1</td></tr>"
+    + $"<tr><td><p>{__wrapLineTestContentWith160Bytes}</p></td></tr>"
++ "</table>";
+
+            return CheckConversion(html);
+        }
+
         #endregion
     }
 }

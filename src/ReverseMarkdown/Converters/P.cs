@@ -51,6 +51,11 @@ namespace ReverseMarkdown.Converters
 
         private int GetWrapLineLength(HtmlNode node)
         {
+            if (node.Ancestors("table").Any() == true)
+            {
+                return int.MaxValue;
+            }
+
             var blockquoteIndentation = node.Ancestors("blockquote").Count()
                 * "> ".Length;
 
