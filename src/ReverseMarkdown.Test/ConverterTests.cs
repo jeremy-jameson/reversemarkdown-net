@@ -13,6 +13,13 @@ namespace ReverseMarkdown.Test
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
+        private const string __wrapLineTestContentWith80Bytes =
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eleifend leo.";
+
+        private const string __wrapLineTestContentWith160Bytes =
+            __wrapLineTestContentWith80Bytes +
+" Vestibulum congue velit nisi. Sed aenean quis libero arcu, feugiat et elit in.";
+
         public ConverterTests(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
@@ -1394,6 +1401,27 @@ namespace ReverseMarkdown.Test
         public Task When_PreElementHasEmbeddedWhitespace_MarkdownPreservesWhitespace()
         {
             var html = "<pre>function foo {\n\t...</pre>";
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_BlockquoteWith80ByteParagraph_ShouldWrapAt80Characters()
+        {
+            var html =
+$"<blockquote><p>{__wrapLineTestContentWith80Bytes}</p></blockquote>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_NestedBlockquotes_ShouldWrapAt80Characters()
+        {
+            var html =
+"<blockquote>"
+    + $"<p>{__wrapLineTestContentWith160Bytes}</p>"
+    + $"<blockquote><p>{__wrapLineTestContentWith80Bytes}</p></blockquote>"
++ "</blockquote>";
+
             return CheckConversion(html);
         }
 

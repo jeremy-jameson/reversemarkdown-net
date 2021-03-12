@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
@@ -15,7 +16,13 @@ namespace ReverseMarkdown.Converters
         {
             var markdown = base.GetMarkdownContent(node).Trim();
 
-            return Converter.TextFormatter.WrapText(markdown);
+            var wrapLineLength = GetWrapLineLength(node);
+
+            markdown = Converter.TextFormatter.WrapText(
+                markdown,
+                wrapLineLength);
+
+            return markdown;
         }
 
         public override string GetMarkdownPrefix(HtmlNode node)
@@ -40,6 +47,14 @@ namespace ReverseMarkdown.Converters
         public override string GetMarkdownSuffix(HtmlNode node)
         {
             return Td.LastNodeWithinCell(node) ? "" : Environment.NewLine;
+        }
+
+        private int GetWrapLineLength(HtmlNode node)
+        {
+            var blockquoteIndentation = node.Ancestors("blockquote").Count()
+                * "> ".Length;
+
+            return (80 - blockquoteIndentation);
         }
     }
 }
