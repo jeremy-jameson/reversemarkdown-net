@@ -16,31 +16,29 @@ namespace ReverseMarkdown.Converters
         {
             var content = DecodeHtml(node.InnerText);
 
-            // check if indentation need to be added if it is under a ordered or unordered list
-            var indentation = IndentationFor(node);
-
             var fencedCodeStartBlock = string.Empty;
             var fencedCodeEndBlock = string.Empty;
 
             if (Converter.Config.GithubFlavored)
             {
                 var lang = GetLanguage(node);
-                fencedCodeStartBlock = $"{indentation}```{lang}{Environment.NewLine}";
-                fencedCodeEndBlock = $"{indentation}```";
+                fencedCodeStartBlock = $"```{lang}{Environment.NewLine}";
+                fencedCodeEndBlock = $"```";
+
+                content = content.TrimEnd();
             }
             else
             {
                 // 4 space indent for code if it is not fenced code block
-                indentation += "    ";
-            }
+                var indentation = "    ";
 
-            var lines = content.ReadLines().Select(item => indentation + item);
-            content = string.Join(Environment.NewLine, lines);
+                content = Converter.TextFormatter.IndentLines(content, indentation);
+            }
 
             if (string.IsNullOrEmpty(content)
                 && Converter.Config.GithubFlavored == false)
             {
-                content = indentation;
+                content = IndentationFor(node) + "    ";
             }
 
             return $"{fencedCodeStartBlock}{content}{Environment.NewLine}{fencedCodeEndBlock}";
@@ -63,8 +61,8 @@ namespace ReverseMarkdown.Converters
 
         private static string GetLanguageFromHighlightClassAttribute(HtmlNode node)
         {
-            var res = ClassMatch(node); 
-            
+            var res = ClassMatch(node);
+
             // check parent node:
             // GitHub: <div class="highlight highlight-source-json"><pre> 
             // BitBucket: <div class="codehilite language-json"><pre>
@@ -83,7 +81,7 @@ namespace ReverseMarkdown.Converters
                     res = ClassMatch(cnode);
                 }
             }
-			
+
             return res.Success && res.Groups.Count == 3 ? res.Groups[2].Value : string.Empty;
         }
 

@@ -27,19 +27,6 @@ namespace ReverseMarkdown.Converters
 
         public override string GetMarkdownPrefix(HtmlNode node)
         {
-            string parentName = node.ParentNode.Name.ToLowerInvariant();
-
-            if (parentName == "ol" || parentName == "ul")
-            {
-                throw new InvalidOperationException("Malformed list.");
-            }
-
-            // If p follows a list item, add newline and indent it
-            var length = node.Ancestors("ol").Count() + node.Ancestors("ul").Count();
-            bool parentIsList = parentName == "li";
-            if (parentIsList && node.ParentNode.FirstChild != node)
-                return Environment.NewLine + (new string(' ', length * 4));
-
             // If p is at the start of a table cell, no leading newline
             return Td.FirstNodeWithinCell(node) ? "" : Environment.NewLine;
         }
@@ -59,7 +46,9 @@ namespace ReverseMarkdown.Converters
             var blockquoteIndentation = node.Ancestors("blockquote").Count()
                 * "> ".Length;
 
-            return (80 - blockquoteIndentation);
+            var listIndentation = node.Ancestors("li").Count() * 4;
+
+            return (80 - blockquoteIndentation - listIndentation);
         }
     }
 }

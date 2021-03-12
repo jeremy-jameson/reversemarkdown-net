@@ -6,6 +6,101 @@ namespace ReverseMarkdown.Test
 {
     public class DefaultTextFormatterTests
     {
+        #region IndentLines
+
+        [Fact]
+        public void IndentLines_ReturnsNullWhenTextIsNull()
+        {
+            string text = null;
+            var expected = text;
+
+            ITextFormatter formatter = new DefaultTextFormatter();
+
+            var actual = formatter.IndentLines(text);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void IndentLines_WithEmptyText()
+        {
+            var text = string.Empty;
+            var expected = text;
+
+            ITextFormatter formatter = new DefaultTextFormatter();
+
+            var actual = formatter.IndentLines(text);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void IndentLines_WithTwoLines()
+        {
+            var text = "foo" + Environment.NewLine + "bar";
+            var expected = "\tfoo" + Environment.NewLine + "\tbar";
+
+            ITextFormatter formatter = new DefaultTextFormatter();
+
+            var actual = formatter.IndentLines(text);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void IndentLines_WithTwoLinesAndCustomIndentation()
+        {
+            var text = "foo" + Environment.NewLine + "bar";
+            var indentation = "    ";
+            var expected = "    foo" + Environment.NewLine + "    bar";
+
+            ITextFormatter formatter = new DefaultTextFormatter();
+
+            var actual = formatter.IndentLines(text, indentation);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void IndentLines_WithBlankLine()
+        {
+            var text =
+@"foo
+
+bar";
+
+            var expected = "\tfoo" + Environment.NewLine
+                + "\t" + Environment.NewLine
+                + "\tbar";
+
+            ITextFormatter formatter = new DefaultTextFormatter();
+
+            var actual = formatter.IndentLines(text);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void IndentLines_WithoutIndentingBlankLines()
+        {
+            var text =
+@"foo
+
+bar";
+
+            var expected = "\tfoo" + Environment.NewLine
+                + Environment.NewLine
+                + "\tbar";
+
+            ITextFormatter formatter = new DefaultTextFormatter();
+
+            var actual = formatter.IndentLines(text, indentBlankLines: false);
+
+            Assert.Equal(expected, actual);
+        }
+
+        #endregion
+
         #region ParseChunks
 
         [Fact]

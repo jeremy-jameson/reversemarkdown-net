@@ -9,6 +9,25 @@ namespace ReverseMarkdown
     public interface ITextFormatter
     {
         /// <summary>
+        /// Indents the specified text.
+        /// </summary>
+        /// <param name="text">The text to indent.</param>
+        /// <param name="indentation">The indentation to use for each line of
+        /// text. Defaults to a single tab (<c>'\t'</c>).</param>
+        /// <param name="indentBlankLines">If <c>true</c>, blank lines in the
+        /// text are indented; if <c>false</c>, blank lines remain empty in the
+        /// indented result. Defaults to <c>true</c>.</param>
+        /// <returns>
+        /// <c>null</c> if <see cref="text"/> is <c>null</c>; otherwise the
+        /// indentated text with each line separated by
+        /// <see cref="Environment.NewLine"/>.
+        /// </returns>
+        string IndentLines(
+            string text,
+            string indentation = "\t",
+            bool indentBlankLines = true);
+
+        /// <summary>
         /// Splits the specified line of text into individual "chunks" --
         /// typically single words -- which can then be used to wrap the text
         /// onto multiple lines, as necessary, using

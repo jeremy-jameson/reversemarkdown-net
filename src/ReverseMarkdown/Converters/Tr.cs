@@ -31,24 +31,16 @@ namespace ReverseMarkdown.Converters
 
         public override string GetMarkdownPrefix(HtmlNode node)
         {
-            // if parent is an ordered or unordered list
-            // then table need to be indented as well
-            var indent = IndentationFor(node);
-
-            return $"{indent}|";
+            return "|";
         }
 
         public override string GetMarkdownSuffix(HtmlNode node)
         {
             var underline = string.Empty;
 
-            // if parent is an ordered or unordered list
-            // then table need to be indented as well
-            var indent = IndentationFor(node);
-
             if (IsTableHeaderRow(node) || UseFirstRowAsHeaderRow(node))
             {
-                underline = UnderlineFor(node, indent);
+                underline = UnderlineFor(node);
             }
 
             return $"{Environment.NewLine}{underline}";
@@ -78,20 +70,20 @@ namespace ReverseMarkdown.Converters
             return node.ChildNodes.FindFirst("th") != null;
         }
 
-        private string UnderlineFor(HtmlNode node, string indent)
+        private string UnderlineFor(HtmlNode node)
         {
             var colCount = node.ChildNodes.Count(child => child.Name == "th" || child.Name == "td");
 
             var cols = new List<string>();
 
-            for (var i = 0; i < colCount; i++ )
+            for (var i = 0; i < colCount; i++)
             {
                 cols.Add("---");
             }
 
             var colsAggregated = string.Join(" | ", cols);
 
-            return $"{indent}| {colsAggregated} |{Environment.NewLine}";
+            return $"| {colsAggregated} |{Environment.NewLine}";
         }
     }
 }

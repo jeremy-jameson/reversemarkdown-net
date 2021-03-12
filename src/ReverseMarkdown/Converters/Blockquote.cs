@@ -15,10 +15,11 @@ namespace ReverseMarkdown.Converters
         {
             var content = base.GetMarkdownContent(node).Trim();
 
-            var prefix = IndentationFor(node) + "> ";
+            const string linePrefix = "> ";
 
             // get the lines based on carriage return and prefix each line
-            var lines = content.ReadLines().Select(item => prefix + item + Environment.NewLine);
+            var lines = content.ReadLines().Select(
+                item => linePrefix + item + Environment.NewLine);
 
             // join all the lines to a single line
             var result = lines.Aggregate(string.Empty, (curr, next) => curr + next);

@@ -12,6 +12,68 @@ namespace ReverseMarkdown
     /// </summary>
     public class DefaultTextFormatter : ITextFormatter
     {
+        private string IndentLine(
+            string line,
+            string indentation,
+            bool indentBlankLine)
+        {
+            if (indentBlankLine == false
+                && IsBlankLine(line) == true)
+            {
+                return line;
+            }
+
+            return indentation + line;
+        }
+
+        /// <summary>
+        /// Indents the specified text.
+        /// </summary>
+        /// <param name="text">The text to indent.</param>
+        /// <param name="indentation">The indentation to use for each line of
+        /// text. Defaults to a single tab (<c>'\t'</c>).</param>
+        /// <param name="indentBlankLines">If <c>true</c>, blank lines in the
+        /// text are indented; if <c>false</c>, blank lines remain empty in the
+        /// indented result. Defaults to <c>true</c>.</param>
+        /// <returns>
+        /// <c>null</c> if <see cref="text"/> is <c>null</c>; otherwise the
+        /// indentated text with each line separated by
+        /// <see cref="Environment.NewLine"/>.
+        /// </returns>
+        public string IndentLines(
+            string text,
+            string indentation,
+            bool indentBlankLines)
+        {
+            if (string.IsNullOrEmpty(text) == true)
+            {
+                return text;
+            }
+
+            var lines = text.ReadLines().Select(item =>
+                IndentLine(item, indentation, indentBlankLines));
+
+            var indentedText = string.Join(Environment.NewLine, lines);
+
+            return indentedText;
+        }
+
+        private bool IsBlankLine(string line)
+        {
+            if (line == null)
+            {
+                return false;
+            }
+            else if (line == string.Empty
+                || (line.Length == 1 && line == "\n")
+                || (line.Length == 2 && line == "\r\n"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Splits the specified line of text into individual "chunks" --
         /// typically single words -- which can then be used to wrap the text

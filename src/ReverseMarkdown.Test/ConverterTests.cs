@@ -1437,6 +1437,26 @@ $"<blockquote><p>{__wrapLineTestContentWith80Bytes}</p></blockquote>";
             return CheckConversion(html);
         }
 
+        [Fact]
+        public Task When_ListWith80ByteParagraph_ShouldWrapAt80Characters()
+        {
+            var html =
+$"<ul><li><p>{__wrapLineTestContentWith80Bytes}</p><li></ul>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_NestedListWith80ByteParagraph_ShouldWrapAt80Characters()
+        {
+            var html =
+"<ul><li>Nested list:"
+    + $"<ul><li><p>{__wrapLineTestContentWith80Bytes}</p></li></ul>"
++ "</li></ul>";
+
+            return CheckConversion(html);
+        }
+
         #endregion
     }
 }

@@ -27,24 +27,33 @@ namespace ReverseMarkdown.Converters
 
             RemoveInsignificantWhitespace(node);
 
-            var content = TreatChildren(node);
+            var content = TreatChildren(node).TrimStart();
+
+            // Note: Indentation level is *always* 1.
+            //
+            // Indentation for "nested" lists is achieved by having each
+            // containing <li> element indent all of its children. For example,
+            // consider the following HTML:
+            //
+            //   <ul>
+            //     <li>Outer list item
+            //       <ul><li>Inner list item</li></ul>
+            //     </li>
+            //   </ul>
+            //
+            // The "Inner list item" is indented the first time when converting
+            // the "inner" <li> element and subsequently indented a second
+            // time when converting the "outer" <li> element.
+
+            var indentation = GetIndentation(1);
+
+            content = Converter.TextFormatter.IndentLines(
+                content, indentation, indentBlankLines: false);
 
             return content.Chomp();
         }
 
         public override string GetMarkdownPrefix(HtmlNode node)
-        {
-            var indentationLevel = GetIndentationLevel(node);
-            Debug.Assert(indentationLevel > 0);
-            indentationLevel--; // no indentation for "first level" list items
-
-            var indentation = GetIndentation(indentationLevel);
-            var prefix = GetPrefixForListItem(node);
-
-            return $"{indentation}{prefix}";
-        }
-
-        private string GetPrefixForListItem(HtmlNode node)
         {
             Debug.Assert(node.Name == "li");
 
