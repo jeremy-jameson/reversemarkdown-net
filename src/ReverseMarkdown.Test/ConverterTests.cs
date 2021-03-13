@@ -1491,7 +1491,7 @@ $"<div>{__wrapLineTestContentWith160Bytes}</div>";
 
             return CheckConversion(html);
         }
- 
+
         [Fact] 
         public Task When_DivWithLongCodeComment_ShouldNotWrap() 
         { 
@@ -1577,6 +1577,18 @@ $"<ul><li>{__wrapLineTestContentWith80Bytes}<li></ul>";
 "<ul><li>Nested list:"
     + $"<ul><li><p>{__wrapLineTestContentWith80Bytes}</p></li></ul>"
 + "</li></ul>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_NestedDivWithLongHugoShortcode_ShouldSkipSecondWrap()
+        {
+            var html =
+"<div>Sample Hugo shortcode with spaces in quoted parameter value:"
++ "<div>{{< figure "
+        + $"title='{__wrapLineTestContentWith80Bytes}'" + " >}}</div>"
++ "</div>";
 
             return CheckConversion(html);
         }

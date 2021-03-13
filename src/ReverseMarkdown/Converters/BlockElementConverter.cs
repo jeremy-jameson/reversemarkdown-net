@@ -27,6 +27,16 @@ namespace ReverseMarkdown.Converters
                 // Never trim or wrap text in block element that contains a
                 // table (e.g. "<div>...<table>...</table></div>")
             }
+            else if (node.Name == "div"
+                && node.Ancestors("div").Any() == true)
+            {
+                // Process only the "outermost" <div> element to avoid issues
+                // where wrapping text multiple times would cause undesired
+                // results. For example, wrapping lengthy Hugo shortcodes twice
+                // will often result in "corruption" due to quoted parameter
+                // values being split across multiple lines (during the second
+                // call to ITextFormatter.WrapText).
+            }
             else if (node.Name == "blockquote"
                 || node.Name == "div"
                 || node.Name == "li"
