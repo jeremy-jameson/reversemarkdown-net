@@ -1593,6 +1593,18 @@ $"<ul><li>{__wrapLineTestContentWith80Bytes}<li></ul>";
             return CheckConversion(html);
         }
 
+        [Fact]
+        public Task When_DivAndParagraphWithLongHugoShortcode_ShouldSkipSecondWrap()
+        {
+            var html =
+"<div>Sample Hugo shortcode with spaces in quoted parameter value:"
++ "<p>{{< figure "
+        + $"title='{__wrapLineTestContentWith80Bytes}'" + " >}}</p>"
++ "</div>";
+
+            return CheckConversion(html);
+        }
+
         #endregion
     }
 }

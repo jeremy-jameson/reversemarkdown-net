@@ -27,7 +27,8 @@ namespace ReverseMarkdown.Converters
                 // Never trim or wrap text in block element that contains a
                 // table (e.g. "<div>...<table>...</table></div>")
             }
-            else if (node.Name == "div"
+            else if (markdown.Contains("{{<") == true
+                && (node.Name == "div" || node.Name == "p")
                 && node.Ancestors("div").Any() == true)
             {
                 // Process only the "outermost" <div> element to avoid issues
