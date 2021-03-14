@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Linq;
 using Xunit;
 
@@ -6,6 +7,14 @@ namespace ReverseMarkdown.Test
 {
     public class HugoMarkdownFormatterTests
     {
+        private IMarkdownFormatter CreateTestFormatter(string html = "<body/>")
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+
+            return new HugoMarkdownFormatter(doc.DocumentNode.FirstChild);
+        }
+
         #region ParseChunks
 
         [Fact]
@@ -13,7 +22,7 @@ namespace ReverseMarkdown.Test
         {
             string text = null;
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -28,7 +37,7 @@ namespace ReverseMarkdown.Test
                 "Cannot parse chunks from text because the text contains a"
                     + " line feed.";
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var ex = Assert.Throws<ArgumentException>(() =>
                 formatter.ParseChunks(text));
@@ -43,7 +52,7 @@ namespace ReverseMarkdown.Test
             var text = string.Empty;
             var expected = new string[] { string.Empty };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -56,7 +65,7 @@ namespace ReverseMarkdown.Test
             var text = "foo bar";
             var expected = new string[] { "foo", "bar" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -69,7 +78,7 @@ namespace ReverseMarkdown.Test
             var text = "foo\tbar \tfoobar";
             var expected = new string[] { "foo\tbar", "\tfoobar" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -85,7 +94,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] { "foo", "bar",
                 "![Example image](http://example.com/img.png)", "foobar" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -101,7 +110,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] { "foo", "bar",
                 "![Example image](http://example.com/img.png),", "foobar" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -117,7 +126,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] { "foo", "bar",
                 "![Example image](http://example.com/img.png).", "foobar" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -133,7 +142,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] { "foo", "bar",
                 "![Example image](http://example.com/img.png)" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -147,7 +156,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] { "foo", "bar",
                 "[Example link](http://example.com)", "foobar" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -161,7 +170,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] { "foo", "bar",
                 "{{<", "gist", "spf13", "7896402 >}}", "foobar" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -175,7 +184,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] {
                 "{{<", "kbd", "\"stsadm -o enumsites\" >}}" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -189,7 +198,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] {
                 "\"{{<", "kbd", "\"stsadm -o enumsites\" >}}\"" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -204,7 +213,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] {
                 "{{<", "figure", "src='http://example.com/img.png' >}}" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -218,7 +227,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] {
                 "\"({{<", "gist", "spf13", "7896402 >}})\"" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -236,7 +245,7 @@ namespace ReverseMarkdown.Test
                 "{{<", "gist", "spf13", "7896402 >}}",
                 "{{<", "instagram", "BWNjjyYFxVx", "hidecaption >}}"};
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -254,7 +263,25 @@ namespace ReverseMarkdown.Test
                 "![Example image](http://example.com/img.png)",
                 "{{<", "gist", "spf13", "7896402 >}}" };
 
-            ITextFormatter formatter = new HugoMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.ParseChunks(text);
+
+            Assert.Equal<string>(expected, actual);
+        }
+
+        [Fact]
+        public void ParseChunks_WithHugoShortcodeInBlockquote()
+        {
+            var text = "foo bar {{< gist spf13 7896402 >}} foobar";
+
+            // Due to the "prefix" added to each line in a blockquote ("> "), a
+            // Hugo shortcode within a <blockquote> element must be processed as
+            // a separate "chunk".
+            var expected = new string[] { "foo", "bar",
+                "{{< gist spf13 7896402 >}}", "foobar" };
+
+            ITextFormatter formatter = CreateTestFormatter("<blockquote/>");
 
             var actual = formatter.ParseChunks(text);
 

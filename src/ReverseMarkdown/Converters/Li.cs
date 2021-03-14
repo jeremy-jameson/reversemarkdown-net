@@ -34,7 +34,9 @@ namespace ReverseMarkdown.Converters
             var indentation = GetListItemIndentation(node);
             Debug.Assert(indentation.Length >= 2);
 
-            content = Converter.TextFormatter.IndentLines(
+            var formatter = Converter.MarkdownFormatterFactory.Create(node);
+
+            content = formatter.IndentLines(
                 content, indentation, indentBlankLines: false);
 
             return content.Chomp();

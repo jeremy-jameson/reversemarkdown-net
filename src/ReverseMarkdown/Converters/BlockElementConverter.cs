@@ -50,7 +50,9 @@ namespace ReverseMarkdown.Converters
                     markdown = markdown.Trim();
                 }
 
-                markdown = Converter.TextFormatter.WrapText(
+                var formatter = Converter.MarkdownFormatterFactory.Create(node);
+
+                markdown = formatter.WrapText(
                     markdown,
                     wrapLineLength);
             }

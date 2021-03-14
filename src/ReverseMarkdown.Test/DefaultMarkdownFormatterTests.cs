@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Linq;
 using Xunit;
 
@@ -6,6 +7,14 @@ namespace ReverseMarkdown.Test
 {
     public class DefaultMarkdownFormatterTests
     {
+        private IMarkdownFormatter CreateTestFormatter()
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml("<body/>");
+
+            return new DefaultMarkdownFormatter(doc.DocumentNode.FirstChild);
+        }
+
         #region ParseChunks
 
         [Fact]
@@ -13,7 +22,7 @@ namespace ReverseMarkdown.Test
         {
             string text = null;
 
-            ITextFormatter formatter = new DefaultMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -28,7 +37,7 @@ namespace ReverseMarkdown.Test
                 "Cannot parse chunks from text because the text contains a"
                     + " line feed.";
 
-            ITextFormatter formatter = new DefaultMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var ex = Assert.Throws<ArgumentException>(() =>
                 formatter.ParseChunks(text));
@@ -43,7 +52,7 @@ namespace ReverseMarkdown.Test
             var text = string.Empty;
             var expected = new string[] { string.Empty };
 
-            ITextFormatter formatter = new DefaultMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -56,7 +65,7 @@ namespace ReverseMarkdown.Test
             var text = "foo bar";
             var expected = new string[] { "foo", "bar" };
 
-            ITextFormatter formatter = new DefaultMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -69,7 +78,7 @@ namespace ReverseMarkdown.Test
             var text = "foo\tbar \tfoobar";
             var expected = new string[] { "foo\tbar", "\tfoobar" };
 
-            ITextFormatter formatter = new DefaultMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -85,7 +94,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] { "foo", "bar",
                 "![Example image](http://example.com/img.png)", "foobar" };
 
-            ITextFormatter formatter = new DefaultMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -101,7 +110,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] { "foo", "bar",
                 "![Example image](http://example.com/img.png),", "foobar" };
 
-            ITextFormatter formatter = new DefaultMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -117,7 +126,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] { "foo", "bar",
                 "![Example image](http://example.com/img.png).", "foobar" };
 
-            ITextFormatter formatter = new DefaultMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -133,7 +142,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] { "foo", "bar",
                 "![Example image](http://example.com/img.png)" };
 
-            ITextFormatter formatter = new DefaultMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -147,7 +156,7 @@ namespace ReverseMarkdown.Test
             var expected = new string[] { "foo", "bar",
                 "[Example link](http://example.com)", "foobar" };
 
-            ITextFormatter formatter = new DefaultMarkdownFormatter();
+            ITextFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.ParseChunks(text);
 
@@ -164,7 +173,7 @@ namespace ReverseMarkdown.Test
             string markdown = null;
             var expectedExceptionText = "Value cannot be null.";
 
-            IMarkdownFormatter formatter = new DefaultMarkdownFormatter();
+            IMarkdownFormatter formatter = CreateTestFormatter();
 
             var ex = Assert.Throws<ArgumentNullException>(() =>
                 formatter.RemoveMultipleConsecutiveBlankLines(markdown));
@@ -179,7 +188,7 @@ namespace ReverseMarkdown.Test
             var markdown = string.Empty;
             var expected = markdown;
 
-            IMarkdownFormatter formatter = new DefaultMarkdownFormatter();
+            IMarkdownFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.RemoveMultipleConsecutiveBlankLines(
                 markdown);
@@ -197,7 +206,7 @@ Paragraph 2";
 
             var expected = markdown;
 
-            IMarkdownFormatter formatter = new DefaultMarkdownFormatter();
+            IMarkdownFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.RemoveMultipleConsecutiveBlankLines(
                 markdown);
@@ -219,7 +228,7 @@ Paragraph 2";
 
 Paragraph 2";
 
-            IMarkdownFormatter formatter = new DefaultMarkdownFormatter();
+            IMarkdownFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.RemoveMultipleConsecutiveBlankLines(
                 markdown);
@@ -242,7 +251,7 @@ Paragraph 2";
 
 Paragraph 2";
 
-            IMarkdownFormatter formatter = new DefaultMarkdownFormatter();
+            IMarkdownFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.RemoveMultipleConsecutiveBlankLines(
                 markdown);
@@ -262,7 +271,7 @@ Paragraph 2";
 @"Paragraph 1
 ";
 
-            IMarkdownFormatter formatter = new DefaultMarkdownFormatter();
+            IMarkdownFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.RemoveMultipleConsecutiveBlankLines(
                 markdown);
@@ -282,7 +291,7 @@ Paragraph 1";
 @"
 Paragraph 1";
 
-            IMarkdownFormatter formatter = new DefaultMarkdownFormatter();
+            IMarkdownFormatter formatter = CreateTestFormatter();
 
             var actual = formatter.RemoveMultipleConsecutiveBlankLines(
                 markdown);

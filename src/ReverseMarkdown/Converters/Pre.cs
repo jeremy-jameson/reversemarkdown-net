@@ -32,7 +32,9 @@ namespace ReverseMarkdown.Converters
                 // 4 space indent for code if it is not fenced code block
                 var indentation = "    ";
 
-                content = Converter.TextFormatter.IndentLines(content, indentation);
+                var formatter = Converter.MarkdownFormatterFactory.Create(node);
+
+                content = formatter.IndentLines(content, indentation);
             }
 
             if (string.IsNullOrEmpty(content)

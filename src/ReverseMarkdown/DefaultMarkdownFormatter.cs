@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -12,6 +13,37 @@ namespace ReverseMarkdown
     public class DefaultMarkdownFormatter : DefaultTextFormatter, IMarkdownFormatter,
         ITextFormatter
     {
+        private readonly HtmlNode _referenceNode;
+
+        /// <summary>
+        /// Initializes a new instance of the
+        /// <see cref="DefaultMarkdownFormatter"/> class with the specified
+        /// "reference" <see cref="HtmlNode"/>.
+        /// </summary>
+        /// <param name="referenceNode">An <see cref="HtmlNode"/> that
+        /// represents the HTML element used for "reference" purposes when
+        /// formatting Markdown text.</param>
+        public DefaultMarkdownFormatter(HtmlNode referenceNode)
+        {
+            if (referenceNode == null)
+            {
+                throw new ArgumentNullException("referenceNode");
+            }
+
+            _referenceNode = referenceNode;
+        }
+
+        /// <summary>
+        /// Gets an <see cref="HtmlNode"/> that represents the HTML element used
+        /// for "reference" purposes when formatting Markdown text.
+        /// </summary>
+        /// <remarks>
+        /// Referencing the source HTML element allows Markdown formatting rules
+        /// to vary based on the structure of the HTML content converted to
+        /// Markdown.
+        /// </remarks>
+        public HtmlNode ReferenceNode => _referenceNode;
+
         /// <summary>
         /// Splits the specified line of text into individual "chunks" --
         /// typically single words -- which can then be used to wrap the text

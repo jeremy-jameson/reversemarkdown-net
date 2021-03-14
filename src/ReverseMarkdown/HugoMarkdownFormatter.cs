@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,6 +14,19 @@ namespace ReverseMarkdown
     public class HugoMarkdownFormatter : DefaultMarkdownFormatter,
         IMarkdownFormatter, ITextFormatter
     {
+        /// <summary>
+        /// Initializes a new instance of the
+        /// <see cref="HugoMarkdownFormatter"/> class with the specified
+        /// "reference" <see cref="HtmlNode"/>.
+        /// </summary>
+        /// <param name="referenceNode">An <see cref="HtmlNode"/> that
+        /// represents the HTML element used for "reference" purposes when
+        /// formatting Markdown text.</param>
+        public HugoMarkdownFormatter(HtmlNode referenceNode)
+            : base(referenceNode)
+        {
+        }
+
         /// <summary>
         /// Splits the specified line of text into individual "chunks" --
         /// typically single words -- which can then be used to wrap the text
@@ -108,7 +122,15 @@ namespace ReverseMarkdown
             // (e.g. "{{< gist spf13 7896402 >}}") but in many cases
             // the shortcodes can be parsed into fine-grained chunks
             // (e.g. "{{<", "gist", "spf13", and "7896402 >}}").
-            ParseHugoShortcodes(chunks);
+            //
+            // However, due to the "prefix" added to each line in a blockquote
+            // ("> "), a Hugo shortcode within a <blockquote> element must be
+            // processed as a separate "chunk".
+
+            if (ReferenceNode.Name != "blockquote")
+            {
+                ParseHugoShortcodes(chunks);
+            }
 
             return chunks.ToArray();
         }

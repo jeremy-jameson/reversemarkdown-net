@@ -1,11 +1,25 @@
-﻿namespace ReverseMarkdown
+﻿using HtmlAgilityPack;
+
+namespace ReverseMarkdown
 {
     /// <summary>
-    /// Defines methods for formatting Markdown -- such as removing multiple
-    /// consecutive blank lines.
+    /// Defines methods for formatting Markdown -- such as indenting text,
+    /// wrapping a long line of Markdown onto multiple lines, and removing
+    /// multiple consecutive blank lines.
     /// </summary>
-    public interface IMarkdownFormatter
+    public interface IMarkdownFormatter : ITextFormatter
     {
+        /// <summary>
+        /// Gets an <see cref="HtmlNode"/> that represents the HTML element used
+        /// for "reference" purposes when formatting Markdown text.
+        /// </summary>
+        /// <remarks>
+        /// Referencing the source HTML element allows Markdown formatting rules
+        /// to vary based on the structure of the HTML content converted to
+        /// Markdown.
+        /// </remarks>
+        HtmlNode ReferenceNode { get;  }
+
         /// <summary>
         /// Removes multiple consecutive blank lines from the Markdown.
         /// </summary>

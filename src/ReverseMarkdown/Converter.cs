@@ -19,8 +19,7 @@ namespace ReverseMarkdown
         // dependency injection or perhaps specifying a custom formatter via
         // configuration).
         private readonly IHtmlFormatter _htmlFormatter;
-        private readonly IMarkdownFormatter _markdownFormatter;
-        private readonly ITextFormatter _textFormatter;
+        private readonly IMarkdownFormatterFactory _markdownFormatterFactory;
 
         public Converter() : this(new Config()) {}
 
@@ -49,13 +48,15 @@ namespace ReverseMarkdown
             // override with their own behavior (e.g. to adjust whitespace
             // within inline elements -- "<b> foo </b>" --> " <b>foo</b> ").
             _htmlFormatter = new DefaultHtmlFormatter();
-            _markdownFormatter = new HugoMarkdownFormatter();
-            _textFormatter = (ITextFormatter) _markdownFormatter;
+            _markdownFormatterFactory = new HugoMarkdownFormatterFactory();
         }
 
         public Config Config { get; }
 
-        public ITextFormatter TextFormatter { get { return _textFormatter; } }
+        public IMarkdownFormatterFactory MarkdownFormatterFactory
+        {
+            get { return _markdownFormatterFactory; }
+        }
 
         public string Convert(string html)
         {
@@ -80,8 +81,9 @@ namespace ReverseMarkdown
 
             if (Config.RemoveMultipleConsecutiveBlankLines == true)
             {
-                result = _markdownFormatter
-                    .RemoveMultipleConsecutiveBlankLines(result);
+                var formatter = _markdownFormatterFactory.Create(root);
+
+                result = formatter.RemoveMultipleConsecutiveBlankLines(result);
             }
 
             return result;
