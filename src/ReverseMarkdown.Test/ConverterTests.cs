@@ -1605,6 +1605,30 @@ $"<ul><li>{__wrapLineTestContentWith80Bytes}<li></ul>";
             return CheckConversion(html);
         }
 
+        [Fact]
+        public Task When_DivAndBlockquoteWithLongHugoShortcode_ShouldSkipSecondWrap()
+        {
+            var html =
+"<div>Sample Hugo shortcode with spaces in quoted parameter value:"
++ "<blockquote>{{< figure "
+        + $"title='{__wrapLineTestContentWith80Bytes}'" + " >}}</blockquote>"
++ "</div>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_BlockquoteAndDivWithLongHugoShortcode_ShouldSkipSecondWrap()
+        {
+            var html =
+"<blockquote>Sample Hugo shortcode with spaces in quoted parameter value:"
++ "<div>{{< figure "
+        + $"title='{__wrapLineTestContentWith80Bytes}'" + " >}}</div>"
++ "</blockquote>";
+
+            return CheckConversion(html);
+        }
+
         #endregion
     }
 }

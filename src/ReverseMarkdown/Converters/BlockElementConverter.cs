@@ -28,10 +28,24 @@ namespace ReverseMarkdown.Converters
                 // table (e.g. "<div>...<table>...</table></div>")
             }
             else if (markdown.Contains("{{<") == true
-                && (node.Name == "div" || node.Name == "p")
-                && node.Ancestors("div").Any() == true)
+                && node.Descendants("blockquote").Any() == true)
             {
-                // Process only the "outermost" <div> element to avoid issues
+                // Avoid "double-wrapping" in <blockquote>, for example:
+                //
+                //   <div><blockquote>{{< ... >}}</blockquote><div>
+                //
+                // When processing the <blockquote> element, line wrapping
+                // within the Hugo shortcode is prevented because the entire
+                // shortcode is parsed as a single "chunk." Consequently, when
+                // processing the <div> element, line wrapping must also be
+                // prevented.
+            }
+            else if (markdown.Contains("{{<") == true
+                && (node.Name == "div" || node.Name == "p")
+                && (node.Ancestors("blockquote").Any() == true
+                    || node.Ancestors("div").Any() == true))
+            {
+                // Process only the "outermost" block element to avoid issues
                 // where wrapping text multiple times would cause undesired
                 // results. For example, wrapping lengthy Hugo shortcodes twice
                 // will often result in "corruption" due to quoted parameter
