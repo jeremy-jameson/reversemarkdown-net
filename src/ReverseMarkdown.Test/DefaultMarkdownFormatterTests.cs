@@ -134,6 +134,22 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public void ParseChunks_WithInlineImageInAngleBrackets()
+        {
+            var text = "foo bar"
+                + " <![Example image](http://example.com/img.png)> foobar";
+
+            var expected = new string[] { "foo", "bar",
+                "<![Example image](http://example.com/img.png)>", "foobar" };
+
+            ITextFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.ParseChunks(text);
+
+            Assert.Equal<string>(expected, actual);
+        }
+
+        [Fact]
         public void ParseChunks_WithInlineImageAtEndOfLine()
         {
             var text = "foo bar"

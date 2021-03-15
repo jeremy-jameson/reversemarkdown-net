@@ -97,7 +97,7 @@ namespace ReverseMarkdown
             var chunks =
                 Regex.Split(
                     text,
-                    @" |(!?\[(?:.*?)\]\((?:.*?)\)[\S]*)",
+                    @" |([\S]*!?\[(?:.*?)\]\((?:.*?)\)[\S]*)",
                     RegexOptions.Compiled)
                 .Where(x => x != string.Empty)
                 .ToArray();

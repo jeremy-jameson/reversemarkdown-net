@@ -104,7 +104,7 @@ namespace ReverseMarkdown
                 + "|" // or
                 // "![...](...)" --> Markdown image "chunk"
                 // "[...](...)" --> Markdown link "chunk"
-                + @"(!?\[(?:.*?)\]\((?:.*?)\)[\S]*)"
+                + @"([\S]*!?\[(?:.*?)\]\((?:.*?)\)[\S]*)"
                 + "|" // or
                 // "{{< ... >}}" --> Hugo shortcode "chunk"
                 + patternForHugoShortcodes
