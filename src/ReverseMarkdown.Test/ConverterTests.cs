@@ -944,6 +944,52 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task When_Trailing_BR_With_GFM_ThenConvertToNoBackslashLineBreak()
+        {
+            var html = "Text with trailing line break<br />";
+            var config = new Config
+            {
+                GithubFlavored = true
+            };
+            return CheckConversion(html, config);
+        }
+
+        [Fact]
+        public Task When_BR_AndNewLine_With_GFM_ThenConvertToNoBackslashLineBreak()
+        {
+            var html = "Text with line break<br />" + Environment.NewLine;
+            var config = new Config
+            {
+                GithubFlavored = true
+            };
+            return CheckConversion(html, config);
+        }
+
+        [Fact]
+        public Task When_BR_BeforeBlockElement__With_GFM_ThenConvertToNoBackslashLineBreak()
+        {
+            var html = "Text with line break<br /><p>Paragraph after line break</p>";
+            var config = new Config
+            {
+                GithubFlavored = true
+            };
+            return CheckConversion(html, config);
+        }
+
+        [Fact]
+        public Task When_Multiple_BR_With_GFM_ThenConvertToBackslashLineBreaks()
+        {
+            var html = "Text before multiple line breaks<br /><br />"
+                    + "Text after multiple line break";
+
+            var config = new Config
+            {
+                GithubFlavored = true
+            };
+            return CheckConversion(html, config);
+        }
+
+        [Fact]
         public Task When_PRE_With_GitHubFlavored_Config_ThenConvertToGFM_PRE()
         {
             var html = "<pre>var test = 'hello world';</pre>";

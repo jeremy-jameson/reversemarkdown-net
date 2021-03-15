@@ -53,6 +53,11 @@ namespace ReverseMarkdown
 
         public Config Config { get; }
 
+        public IHtmlFormatter HtmlFormatter
+        {
+            get { return _htmlFormatter; }
+        }
+        
         public IMarkdownFormatterFactory MarkdownFormatterFactory
         {
             get { return _markdownFormatterFactory; }
