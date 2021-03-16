@@ -147,6 +147,22 @@ namespace ReverseMarkdown.Test
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public void RemoveInsignificantWhitespace_WithLineBreak()
+        {
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml("Before line break  <br>      After line break");
+
+            var expected = "Before line break<br>After line break";
+
+            IHtmlFormatter formatter = new DefaultHtmlFormatter();
+
+            formatter.RemoveInsignificantWhitespace(doc.DocumentNode);
+            var actual = doc.DocumentNode.OuterHtml;
+
+            Assert.Equal(expected, actual);
+        }
+
         #endregion
     }
 }

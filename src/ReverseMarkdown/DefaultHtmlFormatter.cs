@@ -99,7 +99,12 @@ namespace ReverseMarkdown
             {
                 return false;
             }
-            
+
+            if (node.PreviousSibling?.Name == "br")
+            {
+                return false;
+            }
+
             if (IsBlockElement(node.ParentNode) == true
                 && node.ParentNode?.FirstChild == node)
             {
@@ -120,6 +125,11 @@ namespace ReverseMarkdown
             }
 
             if (IsBlockElement(node.NextSibling) == true)
+            {
+                return false;
+            }
+
+            if (node.NextSibling?.Name == "br")
             {
                 return false;
             }
