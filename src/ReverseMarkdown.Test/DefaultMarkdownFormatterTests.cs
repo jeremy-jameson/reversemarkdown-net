@@ -316,5 +316,47 @@ Paragraph 1";
         }
 
         #endregion
+
+        #region WrapText
+
+        [Fact]
+        public void WrapText_WithIndentedTextAndExactWrapLineLength_DoesNotWrap()
+        {
+            var text =
+"    Lorem ipsum dolor sit amet, consectetur adipiscing elit." + Environment.NewLine;
+
+            var wrapLineLength = text.TrimEnd().Length;
+
+            var expected = text;
+
+            ITextFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.WrapText(text, wrapLineLength);
+
+            Assert.Equal(expected, actual);
+        }
+
+        #endregion
+
+        #region WrapTextLine
+
+        [Fact]
+        public void WrapTextLine_WithIndentedTextAndExactWrapLineLength_DoesNotWrap()
+        {
+            var text =
+"    Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+
+            var wrapLineLength = text.Length;
+
+            var expected = text;
+
+            ITextFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.WrapTextLine(text, wrapLineLength);
+
+            Assert.Equal(expected, actual);
+        }
+
+        #endregion
     }
 }

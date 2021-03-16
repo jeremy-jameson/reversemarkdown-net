@@ -130,7 +130,23 @@ namespace ReverseMarkdown
             {
                 return text;
             }
-            else if (text.Length < wrapLineLength)
+
+            var textLength = text.Length;
+            var lengthAdjustment = 0;
+
+            if (textLength > 1 && text[textLength - 1] == '\n')
+            {
+                lengthAdjustment++;
+            }
+
+            if (textLength > 2 && text[textLength - 2] == '\r')
+            {
+                lengthAdjustment++;
+            }
+
+            textLength -= lengthAdjustment;
+
+            if (textLength <= wrapLineLength)
             {
                 return text;
             }
@@ -202,7 +218,7 @@ namespace ReverseMarkdown
                         + " line feed.",
                     "text");
             }
-            else if (text.Length < wrapLineLength)
+            else if (text.Length <= wrapLineLength)
             {
                 return text;
             }
