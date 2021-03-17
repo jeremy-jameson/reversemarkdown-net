@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
@@ -10,6 +9,18 @@ namespace ReverseMarkdown.Converters
         public Br(Converter converter) : base(converter)
         {
             Converter.Register("br", this);
+        }
+
+        public override string Convert(HtmlNode node)
+        {
+            // Hard line breaks are not supported in pipe-delimited Markdown
+            // tables -- so leave as HTML
+            if (node.Ancestors("table").Any())
+            {
+                return node.OuterHtml;
+            }
+
+            return base.Convert(node);
         }
 
         public override string GetMarkdownContent(HtmlNode node)
@@ -42,14 +53,6 @@ namespace ReverseMarkdown.Converters
         private bool IsBackslashPermittedForLineBreak(HtmlNode node)
         {
             Debug.Assert(node.Name == "br");
-
-            if (node.Ancestors("td").Any() == true)
-            {
-                // Do not include backslash for <br> within <td>
-                // (pipe-delimited Markdown tables)
-
-                return false;
-            }
 
             // Note: In Markdown, hard line breaks using backslashes
             // render as literal backslashes where there is no

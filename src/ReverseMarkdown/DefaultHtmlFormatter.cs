@@ -17,8 +17,8 @@ namespace ReverseMarkdown
                 "blockquote", "canvas", "dd", "div", "dl", "dt", "fieldset",
                 "figcaption", "figure", "footer", "form", "h1", "h2", "h3",
                 "h4", "h5", "h6", "header", "hr", "li", "main", "nav",
-                "noscript", "ol", "p", "pre", "section", "table", "tfoot",
-                "ul", "video" });
+                "noscript", "ol", "p", "pre", "section", "table", "tbody", "td",
+                "tfoot", "th", "thead", "tr", "ul", "video" });
 
         private static readonly HashSet<string> __inlineTags =
             new HashSet<string>(new string[] { "a", "abbr", "acronym", "b",
@@ -219,37 +219,6 @@ namespace ReverseMarkdown
 
             // Never change the whitespace in preformatted (<pre>) content
             if (textNode.Ancestors("pre").Any() == true)
-            {
-                return;
-            }
-
-            // Theoretically, we should be able to normalize whitespace in every
-            // text node within the <body> element (or even the root <html>
-            // element) -- provided we skip preformatted (<pre>) content.
-            //
-            // However, doing so causes a number of existing unit tests to fail
-            // -- in particular the ones that test "funky" content embedded in
-            // tables. For example, converting a "plain" line break
-            // (i.e. "\r\n") to an HTML <br> element.
-            //
-            // For the time being, do *not* normalize whitespace in tables.
-            //
-            // TODO: Normalize whitespace in tables and "fix" the tests
-            // accordingly (e.g. figure out why converting "plain" line breaks
-            // to HTML line breaks by default was considered necessary.
-            //
-            // For reference purposes, I believe the table in the following blog
-            // post is corrupted by the "plain" line break to HTML line break
-            // behavior in ReverseMarkdown:
-            //
-            // https://www.technologytoolbox.com/blog/jjameson/archive/2012/02/19/html-to-pdf-converters.aspx
-            //
-            // Related commit (essentially my hack around the ReverseMarkdown
-            // issue):
-            //
-            // https://github.com/jeremy-jameson/BlogML2Hugo/commit/0576f9809f39a622079c3bf0d21c8c1fef2a4cae
-
-            if (textNode.Ancestors("table").Any() == true)
             {
                 return;
             }

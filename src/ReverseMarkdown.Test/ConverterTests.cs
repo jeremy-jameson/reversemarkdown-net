@@ -862,10 +862,10 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
-        public Task WhenTable_Cell_Content_WithNewline_Add_BR_ThenConvertToGFMTable()
+        public Task WhenTable_Cell_Content_WithLineBreak_ThenPreserveLineBreak()
         {
             var html =
-                $"<table><tr><th>col1</th><th>col2</th><th>col3</th></tr><tr><td>data line1{Environment.NewLine}line2</td><td>data2</td><td>data3</td></tr></table>";
+                $"<table><tr><th>col1</th><th>col2</th><th>col3</th></tr><tr><td>data line1<br>line2</td><td>data2</td><td>data3</td></tr></table>";
             var config = new Config
             {
                 RemoveMultipleConsecutiveBlankLines = false,
