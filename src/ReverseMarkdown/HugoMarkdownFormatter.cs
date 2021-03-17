@@ -22,8 +22,8 @@ namespace ReverseMarkdown
         /// <param name="referenceNode">An <see cref="HtmlNode"/> that
         /// represents the HTML element used for "reference" purposes when
         /// formatting Markdown text.</param>
-        public HugoMarkdownFormatter(HtmlNode referenceNode)
-            : base(referenceNode)
+        public HugoMarkdownFormatter(HtmlNode referenceNode, Config config)
+            : base(referenceNode, config)
         {
         }
 

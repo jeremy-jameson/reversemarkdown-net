@@ -86,7 +86,7 @@ namespace ReverseMarkdown
 
             if (Config.RemoveMultipleConsecutiveBlankLines == true)
             {
-                var formatter = _markdownFormatterFactory.Create(root);
+                var formatter = _markdownFormatterFactory.Create(root, Config);
 
                 result = formatter.RemoveMultipleConsecutiveBlankLines(result);
             }

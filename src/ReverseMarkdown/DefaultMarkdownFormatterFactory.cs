@@ -17,9 +17,9 @@ namespace ReverseMarkdown
         /// formatting Markdown text.</param>
         /// <returns>An <see cref="IMarkdownFormatter"/> object that supports
         /// "basic" formatting of Markdown text.</returns>
-        public IMarkdownFormatter Create(HtmlNode referenceNode)
+        public IMarkdownFormatter Create(HtmlNode referenceNode, Config config)
         {
-            return new DefaultMarkdownFormatter(referenceNode);
+            return new DefaultMarkdownFormatter(referenceNode, config);
         }
     }
 }

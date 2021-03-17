@@ -16,59 +16,21 @@ namespace ReverseMarkdown.Converters
         {
             var markdown = base.GetMarkdownContent(node);
 
-            if (node.Name == "pre"
-                || node.Ancestors("pre").Any() == true
-                || node.Descendants("pre").Any() == true)
-            {
-                // Never trim or wrap text in preformatted content
-            }
-            else if (node.Descendants("table").Any() == true)
-            {
-                // Never trim or wrap text in block element that contains a
-                // table (e.g. "<div>...<table>...</table></div>")
-            }
-            else if (markdown.Contains("{{<") == true
-                && node.Descendants("blockquote").Any() == true)
-            {
-                // Avoid "double-wrapping" in <blockquote>, for example:
-                //
-                //   <div><blockquote>{{< ... >}}</blockquote><div>
-                //
-                // When processing the <blockquote> element, line wrapping
-                // within the Hugo shortcode is prevented because the entire
-                // shortcode is parsed as a single "chunk." Consequently, when
-                // processing the <div> element, line wrapping must also be
-                // prevented.
-            }
-            else if (markdown.Contains("{{<") == true
-                && (node.Name == "div" || node.Name == "p")
-                && (node.Ancestors("blockquote").Any() == true
-                    || node.Ancestors("div").Any() == true))
-            {
-                // Process only the "outermost" block element to avoid issues
-                // where wrapping text multiple times would cause undesired
-                // results. For example, wrapping lengthy Hugo shortcodes twice
-                // will often result in "corruption" due to quoted parameter
-                // values being split across multiple lines (during the second
-                // call to ITextFormatter.WrapText).
-            }
-            else if (node.Name == "blockquote"
-                || node.Name == "div"
-                || node.Name == "li"
-                || node.Name == "p")
-            {
-                var wrapLineLength = GetWrapLineLength(node);
+            var formatter = Converter.MarkdownFormatterFactory.Create(
+                node, Converter.Config);
 
-                if (node.Name != "div")
-                {
-                    markdown = markdown.Trim();
-                }
+            var formattingRules = formatter.GetFormattingRules();
 
-                var formatter = Converter.MarkdownFormatterFactory.Create(node);
+            if (formattingRules.CanTrim == true)
+            {
+                markdown = markdown.Trim();
+            }
 
+            if (formattingRules.WrapLineLength < int.MaxValue)
+            {
                 markdown = formatter.WrapText(
                     markdown,
-                    wrapLineLength);
+                    formattingRules.WrapLineLength);
             }
 
             return markdown;

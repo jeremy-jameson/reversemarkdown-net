@@ -12,7 +12,9 @@ namespace ReverseMarkdown.Test
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            return new HugoMarkdownFormatter(doc.DocumentNode.FirstChild);
+            return new HugoMarkdownFormatter(
+                doc.DocumentNode.FirstChild,
+                new Config());
         }
 
         #region ParseChunks

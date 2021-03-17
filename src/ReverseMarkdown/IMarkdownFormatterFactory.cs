@@ -21,6 +21,6 @@ namespace ReverseMarkdown
         /// represents the HTML element used for "reference" purposes when
         /// formatting Markdown text.</param>
         /// <returns>An <see cref="IMarkdownFormatter"/> object.</returns>
-        IMarkdownFormatter Create(HtmlNode referenceNode);
+        IMarkdownFormatter Create(HtmlNode referenceNode, Config config);
     }
 }

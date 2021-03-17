@@ -17,9 +17,9 @@ namespace ReverseMarkdown
         /// formatting Markdown text.</param>
         /// <returns>An <see cref="IMarkdownFormatter"/> object that supports
         /// formatting Markdown text containing Hugo shortcodes.</returns>
-        public IMarkdownFormatter Create(HtmlNode referenceNode)
+        public IMarkdownFormatter Create(HtmlNode referenceNode, Config config)
         {
-            return new HugoMarkdownFormatter(referenceNode);
+            return new HugoMarkdownFormatter(referenceNode, config);
         }
     }
 }

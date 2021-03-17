@@ -2,18 +2,301 @@
 using System;
 using System.Linq;
 using Xunit;
+using FluentAssertions;
 
 namespace ReverseMarkdown.Test
 {
     public class DefaultMarkdownFormatterTests
     {
-        private IMarkdownFormatter CreateTestFormatter()
+
+        private IMarkdownFormatter CreateTestFormatter(
+            HtmlNode referenceNode = null)
+        {
+            if (referenceNode == null)
+            {
+                referenceNode = CreateTestHtmlNode();
+            }
+
+            return new DefaultMarkdownFormatter(referenceNode, new Config());
+        }
+
+        private HtmlNode CreateTestHtmlNode(
+            string html = "<body/>",
+            string xpath = "/*[1]")
         {
             var doc = new HtmlDocument();
-            doc.LoadHtml("<body/>");
+            doc.LoadHtml(html);
 
-            return new DefaultMarkdownFormatter(doc.DocumentNode.FirstChild);
+            var node = doc.DocumentNode.SelectSingleNode(xpath);
+
+            return node;
         }
+
+        #region GetFormattingRules
+
+        [Fact]
+        public void GetFormattingRules_ForBlockquote()
+        {
+            var node = CreateTestHtmlNode("<blockquote/>");
+            var expected = new MarkdownFormattingRules()
+            {
+                CanTrim = true,
+                WrapLineLength = 78 // 80 - "> ".Length
+            };
+
+            IMarkdownFormatter formatter = CreateTestFormatter(node);
+
+            var actual = formatter.GetFormattingRules();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetFormattingRules_ForDiv()
+        {
+            var node = CreateTestHtmlNode("<div/>");
+            var expected = new MarkdownFormattingRules()
+            {
+                CanTrim = false,
+                WrapLineLength = 80
+            };
+
+            IMarkdownFormatter formatter = CreateTestFormatter(node);
+
+            var actual = formatter.GetFormattingRules();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetFormattingRules_ForNestedDivWithHugoShortcodeInBlockquote()
+        {
+            // For content similar to the following, no line wrapping should be
+            // performed on the "inner <div>" (because wrapping Hugo shortcodes
+            // in a <blockquote> can lead to corrupt Markdown -- due to the "> "
+            // prefix used for blockquotes)
+
+            var node = CreateTestHtmlNode(
+                "<blockquote>"
+                    + "<div>{{< gist spf13 7896402 >}}</div>"
+                + "</blockquote>",
+                "/blockquote/div");
+
+            var expected = new MarkdownFormattingRules()
+            {
+                CanTrim = false,
+                WrapLineLength = int.MaxValue
+            };
+
+            IMarkdownFormatter formatter = CreateTestFormatter(node);
+
+            var actual = formatter.GetFormattingRules();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetFormattingRules_ForOuterDivWithHugoShortcodeInBlockquote()
+        {
+            // For content similar to the following, no line wrapping should be
+            // performed on the "outer <div>" because a Hugo shortcode within a
+            // <blockquote> must be parsed as a single "chunk" (in other words,
+            // it must be parsed exactly once -- in the context of the "inner
+            // <blockquote>")
+
+            var node = CreateTestHtmlNode(
+                "<div>"
+                    + "<blockquote>{{< gist spf13 7896402 >}}</blockquote>"
+                + "</div>",
+                "/div");
+
+            var expected = new MarkdownFormattingRules()
+            {
+                CanTrim = false,
+                WrapLineLength = int.MaxValue
+            };
+
+            IMarkdownFormatter formatter = CreateTestFormatter(node);
+
+            var actual = formatter.GetFormattingRules();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetFormattingRules_ForDivWithNestedPre()
+        {
+            // For content similar to the following, no line wrapping should be
+            // performed on the "outer <div>" because it contains preformatted
+            // text
+
+            var node = CreateTestHtmlNode(
+                "<div><blockquote><pre/></blockquote></div>",
+                "/div");
+
+            var expected = new MarkdownFormattingRules()
+            {
+                CanTrim = false,
+                WrapLineLength = int.MaxValue
+            };
+
+            IMarkdownFormatter formatter = CreateTestFormatter(node);
+
+            var actual = formatter.GetFormattingRules();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetFormattingRules_ForDivWithNestedTable()
+        {
+            // For content similar to the following, no line wrapping should be
+            // performed on the "outer <div>" because it contains a table (i.e.
+            // pipe-delimited content in Markdown)
+
+            var node = CreateTestHtmlNode(
+                "<div><blockquote><table/></blockquote></div>",
+                "/div");
+
+            var expected = new MarkdownFormattingRules()
+            {
+                CanTrim = false,
+                WrapLineLength = int.MaxValue
+            };
+
+            IMarkdownFormatter formatter = CreateTestFormatter(node);
+
+            var actual = formatter.GetFormattingRules();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetFormattingRules_ForDivInsidePreformattedText()
+        {
+            // For content similar to the following, no line wrapping should be
+            // performed on the "inner <div>" because it is inside preformattted
+            // content
+
+            var node = CreateTestHtmlNode("<pre><div/></pre>", "/pre/div");
+            var expected = new MarkdownFormattingRules()
+            {
+                CanTrim = false,
+                WrapLineLength = int.MaxValue
+            };
+
+            IMarkdownFormatter formatter = CreateTestFormatter(node);
+
+            var actual = formatter.GetFormattingRules();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetFormattingRules_ForListItem()
+        {
+            var node = CreateTestHtmlNode("<li/>");
+            var expected = new MarkdownFormattingRules()
+            {
+                CanTrim = true,
+                WrapLineLength = 78 // 80 - "- ".Length
+            };
+
+            IMarkdownFormatter formatter = CreateTestFormatter(node);
+
+            var actual = formatter.GetFormattingRules();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetFormattingRules_ForParagraph()
+        {
+            var node = CreateTestHtmlNode("<p/>");
+            var expected = new MarkdownFormattingRules()
+            {
+                CanTrim = true,
+                WrapLineLength = 80
+            };
+
+            IMarkdownFormatter formatter = CreateTestFormatter(node);
+
+            var actual = formatter.GetFormattingRules();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetFormattingRules_ForNestedParagraphWithHugoShortcodeInBlockquote()
+        {
+            // For content similar to the following, no line wrapping should be
+            // performed on the "inner <p>" (because wrapping Hugo shortcodes
+            // in a <blockquote> can lead to corrupt Markdown -- due to the "> "
+            // prefix used for blockquotes)
+
+            var node = CreateTestHtmlNode(
+                "<blockquote>"
+                    + "<p>{{< gist spf13 7896402 >}}</p>"
+                + "</blockquote>",
+                "/blockquote/p");
+
+            var expected = new MarkdownFormattingRules()
+            {
+                CanTrim = false,
+                WrapLineLength = int.MaxValue
+            };
+
+            IMarkdownFormatter formatter = CreateTestFormatter(node);
+
+            var actual = formatter.GetFormattingRules();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetFormattingRules_ForNestedParagraphWithHugoShortcodeInDiv()
+        {
+            // For content similar to the following, no line wrapping should be
+            // performed on the "inner <p>" (because it is more efficient to wrap
+            // the content when formatting the Markdown for the "outer <div>")
+
+            var node = CreateTestHtmlNode(
+                "<div>"
+                    + "<p>{{< gist spf13 7896402 >}}</p>"
+                + "</div>",
+                "/div/p");
+
+            var expected = new MarkdownFormattingRules()
+            {
+                CanTrim = false,
+                WrapLineLength = int.MaxValue
+            };
+
+            IMarkdownFormatter formatter = CreateTestFormatter(node);
+
+            var actual = formatter.GetFormattingRules();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetFormattingRules_ForPreformattedText()
+        {
+            var node = CreateTestHtmlNode("<pre/>");
+            var expected = new MarkdownFormattingRules()
+            {
+                CanTrim = false,
+                WrapLineLength = int.MaxValue
+            };
+
+            IMarkdownFormatter formatter = CreateTestFormatter(node);
+
+            var actual = formatter.GetFormattingRules();
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        #endregion
 
         #region ParseChunks
 
