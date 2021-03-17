@@ -1019,8 +1019,7 @@ namespace ReverseMarkdown.Test
             var html = @"<div class=""highlight highlight-source-csharp""><pre>var test = ""hello world"";</pre></div>";
             var config = new Config
             {
-                GithubFlavored = true,
-                RemoveMultipleConsecutiveBlankLines = false
+                GithubFlavored = true
             };
             return CheckConversion(html, config);
         }
@@ -1309,9 +1308,7 @@ namespace ReverseMarkdown.Test
         public Task When_PRE_With_Parent_DIV_And_Non_GitHubFlavored_Config_FirstLine_CodeBlock_SpaceIndent_Should_Be_Retained()
         {
             var html = @"<div><pre>var test = ""hello world"";</pre></div>";
-            return CheckConversion(
-                html,
-                new Config { RemoveMultipleConsecutiveBlankLines = false });
+            return CheckConversion(html);
         }
 
         [Fact]
