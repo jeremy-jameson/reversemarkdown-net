@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
@@ -33,6 +34,37 @@ namespace ReverseMarkdown.Converters
             }
 
             return base.Convert(node);
+        }
+
+        public override string GetMarkdownContent(HtmlNode node)
+        {
+            var headingText = new StringBuilder(base.GetMarkdownContent(node));
+            string anchor = null;
+
+            var anchorElement = node.Descendants("a").FirstOrDefault();
+
+            if (anchorElement != null)
+            {
+                anchor = anchorElement.GetAttributeValue("name", anchor);
+
+                if (string.IsNullOrEmpty(anchor) == true)
+                {
+                    anchor = anchorElement.GetAttributeValue(
+                        "title",
+                        anchor);
+                }
+            }
+
+            if (string.IsNullOrEmpty(anchor) == false)
+            {
+                anchor = EncodeUrlForMarkdown("#" + anchor);
+
+                headingText.Append(" {");
+                headingText.Append(anchor);
+                headingText.Append("}");
+            }
+
+            return headingText.ToString();
         }
 
         public override string GetMarkdownPrefix(HtmlNode node)

@@ -354,6 +354,29 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task WhenThereIsH3TagWithAnchor_ThenConvertToMarkdownHeader()
+        {
+            var html =
+@"<h3>
+    <a name='Development_Integration_Environment_(DEV)'></a>
+    Development Integration Environment (DEV)
+</h3>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task WhenThereIsLinkToHeaderWithAnchor_ThenConvertToMarkdownLink()
+        {
+            var html =
+@"<a href='#Development_Integration_Environment_(DEV)'>
+    Development Integration Environment (DEV)
+</a>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
         public Task WhenThereIsBlockquoteTag_ThenConvertToMarkdownBlockquote()
         {
             var html = "This text has <blockquote>blockquote</blockquote>. This text appear after header.";

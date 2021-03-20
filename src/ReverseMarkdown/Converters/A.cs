@@ -17,7 +17,9 @@ namespace ReverseMarkdown.Converters {
 
             var hasSingleChildImgNode = node.ChildNodes.Count == 1 && node.ChildNodes.Count(n => n.Name.Contains("img")) == 1;
 
-            var href = node.GetAttributeValue("href", string.Empty).Trim().Replace("(", "%28").Replace(")", "%29").Replace(" ", "%20");
+            var href = node.GetAttributeValue("href", string.Empty);
+            href = EncodeUrlForMarkdown(href);
+
             var title = ExtractTitle(node);
             title = title.Length > 0 ? $" \"{title}\"" : "";
             var scheme = StringUtils.GetScheme(href);
@@ -31,8 +33,7 @@ namespace ReverseMarkdown.Converters {
                                                 || href.Equals($"mailto:{name}", StringComparison.OrdinalIgnoreCase)
                                             );
 
-            if (href.StartsWith("#") //anchor link
-                || !Converter.Config.IsSchemeWhitelisted(scheme) //Not allowed scheme
+            if (!Converter.Config.IsSchemeWhitelisted(scheme) //Not allowed scheme
                 || isRemoveLinkWhenSameName //Same link - why bother with [](). Except when incorrectly escaped, i.e unescaped spaces - then bother with []()
                 || string.IsNullOrEmpty(href) //We would otherwise print empty () here...
                 || string.IsNullOrEmpty(name))
@@ -50,5 +51,5 @@ namespace ReverseMarkdown.Converters {
                 return useHrefWithHttpWhenNameHasNoScheme ? href : $"[{linkText}]({href}{title})";
             }
 		}
-	}
+    }
 }

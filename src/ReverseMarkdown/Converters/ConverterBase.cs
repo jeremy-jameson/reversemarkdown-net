@@ -13,6 +13,31 @@ namespace ReverseMarkdown.Converters
 
         protected Converter Converter { get; }
 
+        protected virtual string EncodeUrlForMarkdown(string url)
+        {
+            if (url.StartsWith("#") == true)
+            {
+                var encodedUrl = url
+                    .Trim()
+                    .Replace("(", "-")
+                    .Replace(")", "-")
+                    .Replace(" ", "-");
+
+                while (encodedUrl.Contains("--") == true)
+                {
+                    encodedUrl = encodedUrl.Replace("--", "-");
+                }
+
+                return encodedUrl.TrimEnd(new char[] { '-' });
+            }
+
+            return url
+                .Trim()
+                .Replace("(", "%28")
+                .Replace(")", "%29")
+                .Replace(" ", "%20");
+        }
+
         protected string TreatChildren(HtmlNode node)
         {
             var result = string.Empty;
