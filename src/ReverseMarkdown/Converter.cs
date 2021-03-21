@@ -14,6 +14,8 @@ namespace ReverseMarkdown
         private readonly IConverter _dropTagsConverter;
         private readonly IConverter _byPassTagsConverter;
 
+        private readonly ICodeBlockLanguageMapper _codeBlockLanguageMapper;
+
         // Use the formatter interfaces to allow the formatter dependencies to
         // be specified using some other mechanism in the future (e.g.
         // dependency injection or perhaps specifying a custom formatter via
@@ -43,6 +45,11 @@ namespace ReverseMarkdown
             _dropTagsConverter = new Drop(this);
             _byPassTagsConverter = new ByPass(this);
 
+            _codeBlockLanguageMapper = Config.CodeBlockLanguageMapper ??
+                new DefaultCodeBlockLanguageMapper();
+
+            Config.CodeBlockLanguageMapper = _codeBlockLanguageMapper;
+
             // TODO: Should the formatters be configurable?
             // Consider adding a Config property that callers could use to
             // override with their own behavior (e.g. to adjust whitespace
@@ -51,17 +58,15 @@ namespace ReverseMarkdown
             _markdownFormatterFactory = new HugoMarkdownFormatterFactory();
         }
 
+        public ICodeBlockLanguageMapper CodeBlockLanguageMapper =>
+            _codeBlockLanguageMapper;
+
         public Config Config { get; }
 
-        public IHtmlFormatter HtmlFormatter
-        {
-            get { return _htmlFormatter; }
-        }
+        public IHtmlFormatter HtmlFormatter => _htmlFormatter;
         
-        public IMarkdownFormatterFactory MarkdownFormatterFactory
-        {
-            get { return _markdownFormatterFactory; }
-        }
+        public IMarkdownFormatterFactory MarkdownFormatterFactory =>
+            _markdownFormatterFactory;
 
         public string Convert(string html)
         {

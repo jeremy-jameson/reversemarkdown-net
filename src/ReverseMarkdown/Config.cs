@@ -56,6 +56,16 @@ namespace ReverseMarkdown
         public string DefaultCodeBlockLanguage { get; set; }
 
         /// <summary>
+        /// Specifies the <see cref="ICodeBlockLanguageMapper"> to use for
+        /// mapping class attribute language names (e.g. <c>"vbnet"</c> in
+        /// <c>&lt;pre class="language-vbnet"&gt;</c>) to the preferred language
+        /// names for fenced code blocks in Markdown (e.g.
+        /// <c>"Visual Basic .NET"</c> in </c>"```Visual Basic .NET"</c>). By
+        /// default, no mapping is performed.
+        /// </summary>
+        public ICodeBlockLanguageMapper CodeBlockLanguageMapper { get; set; }
+
+        /// <summary>
         /// Option to pass a list of tags to pass through as is without any processing
         /// </summary>
         public string[] PassThroughTags { get; set; } = { };

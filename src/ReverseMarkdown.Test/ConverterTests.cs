@@ -1072,6 +1072,21 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task When_PRE_With_Mapped_Lang_Class_Att_With_Symbol_And_GitHubFlavored_Config_ThenConvertToGFM_PRE()
+        {
+            var codeBlockLanguageMapper = new DefaultCodeBlockLanguageMapper(false);
+            codeBlockLanguageMapper.AddMapping("Visual Basic .NET", "vbnet");
+
+            var html = @"<pre><code class=""language-vbnet"">Dim i As Integer</code></pre>";
+            var config = new Config
+            {
+                CodeBlockLanguageMapper = codeBlockLanguageMapper,
+                GithubFlavored = true
+            };
+            return CheckConversion(html, config);
+        }
+
+        [Fact]
         public Task WhenRemovedCommentsIsEnabled_CommentsAreRemoved()
         {
             var html = "Hello there <!-- This is a HTML comment block which will be removed! --><!-- This wont be removed because it is incomplete";

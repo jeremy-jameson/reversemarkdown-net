@@ -63,6 +63,12 @@ namespace ReverseMarkdown.Converters
         {
             var language = GetLanguageFromHighlightClassAttribute(node);
 
+            if (string.IsNullOrEmpty(language) == false)
+            {
+                language = Converter
+                    .CodeBlockLanguageMapper.GetMarkdownLanguage(language);
+            }
+
             return !string.IsNullOrEmpty(language)
                 ? language
                 : Converter.Config.DefaultCodeBlockLanguage;
