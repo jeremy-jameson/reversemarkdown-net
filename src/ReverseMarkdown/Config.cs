@@ -46,6 +46,11 @@ namespace ReverseMarkdown
             TableWithoutHeaderRowHandlingOption.Default;
 
         /// <summary>
+        /// Option to set a different emphasis character. Defaults to <c>'*'</c>.
+        /// </summary>
+        public char EmphasisChar { get; set; } = '*';
+
+        /// <summary>
         /// Option to set a different bullet character for un-ordered lists
         /// </summary>
         public char ListBulletChar { get; set; } = '-';

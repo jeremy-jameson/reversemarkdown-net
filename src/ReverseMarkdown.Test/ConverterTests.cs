@@ -275,6 +275,15 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task WhenThereIsEmTagWithCustomEmphasisChar_ThenConvertToMarkdown()
+        {
+            var html = "This is a <em>sample</em> paragraph";
+            return CheckConversion(
+                html,
+                new Config { EmphasisChar = '_' });
+        }
+
+        [Fact]
         public Task WhenThereIsITag_ThenConvertToMarkdownSingleAsterisks()
         {
             var html = "This is a <i>sample</i> paragraph";

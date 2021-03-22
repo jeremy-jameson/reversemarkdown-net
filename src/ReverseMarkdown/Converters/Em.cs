@@ -29,7 +29,7 @@ namespace ReverseMarkdown.Converters
 
         public override string GetMarkdownPrefix(HtmlNode node)
         {
-            return "*";
+            return $"{Converter.Config.EmphasisChar}";
         }
 
         public override string GetMarkdownSuffix(HtmlNode node)
@@ -38,7 +38,7 @@ namespace ReverseMarkdown.Converters
                 ? " "
                 : "";
 
-            return $"*{spaceSuffix}";
+            return $"{Converter.Config.EmphasisChar}{spaceSuffix}";
         }
 
         private bool AlreadyItalic(HtmlNode node)
