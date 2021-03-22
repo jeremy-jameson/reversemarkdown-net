@@ -15,6 +15,8 @@ namespace ReverseMarkdown.Converters
         {
             var content = base.GetMarkdownContent(node).Trim();
 
+            content = RemoveMultipleConsecutiveBlankLines(node, content);
+
             const string linePrefix = "> ";
 
             // get the lines based on carriage return and prefix each line
@@ -30,6 +32,17 @@ namespace ReverseMarkdown.Converters
         public override string GetMarkdownPrefix(HtmlNode node)
         {
             return Environment.NewLine + Environment.NewLine;
+        }
+
+        private string RemoveMultipleConsecutiveBlankLines(
+            HtmlNode node,
+            string markdown)
+        {
+            var formatter = Converter.MarkdownFormatterFactory.Create(
+                node,
+                Converter.Config);
+
+            return formatter.RemoveMultipleConsecutiveBlankLines(markdown);
         }
     }
 }
