@@ -283,13 +283,13 @@ namespace ReverseMarkdown
                 throw new ArgumentNullException("markdown");
             }
 
-            if (markdown.StartsWith(
+            while (markdown.StartsWith(
                 Environment.NewLine + Environment.NewLine) == true)
             {
                 markdown = markdown.Substring(Environment.NewLine.Length);
             }
 
-            if (markdown.EndsWith(
+            while (markdown.EndsWith(
                 Environment.NewLine + Environment.NewLine) == true)
             {
                 markdown = markdown.Remove(markdown.Length - Environment.NewLine.Length);
