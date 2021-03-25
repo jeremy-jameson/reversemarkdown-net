@@ -1,5 +1,4 @@
-﻿using System;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 
 namespace ReverseMarkdown.Converters
 {
@@ -12,7 +11,7 @@ namespace ReverseMarkdown.Converters
 
         public override string GetMarkdownContent(HtmlNode node)
         {
-            return "* * *";
+            return Converter.Config.HorizontalRuleString;
         }
     }
 }

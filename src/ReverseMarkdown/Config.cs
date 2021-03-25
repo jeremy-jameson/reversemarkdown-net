@@ -9,6 +9,12 @@ namespace ReverseMarkdown
 
         public bool GithubFlavored { get; set; } = false;
 
+        /// <summary>
+        /// Option to specify Markdown text for converting horizontal rule
+        /// <c>&lt;hr&gt;</c> elements. Defaults to <c>"* * *"</c>.
+        /// </summary>
+        public string HorizontalRuleString { get; set; } = "* * *";
+
         public bool RemoveComments { get; set; } = false;
 
         /// <summary>

@@ -455,6 +455,14 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task WhenThereIsCustomHorizontalRuleString_ThenConvertToMarkdownHorizontalRule()
+        {
+            var html = "This text has horizontal rule.<hr/>Next line of text";
+            return CheckConversion(
+                html, new Config() { HorizontalRuleString = "---" });
+        }
+
+        [Fact]
         public Task WhenThereIsImgTag_ThenConvertToMarkdownImage()
         {
             var html =
