@@ -18,6 +18,12 @@ namespace ReverseMarkdown
         public bool RemoveComments { get; set; } = false;
 
         /// <summary>
+        /// If <c>true</c>, trailing whitespace in code blocks is removed from
+        /// the Markdown. Defaults to <c>false</c>.
+        /// </summary>
+        public bool RemoveTrailingWhitespaceFromCode { get; set; } = false;
+
+        /// <summary>
         /// If <c>true</c>, multiple consecutive blank lines are removed from
         /// the Markdown. Defaults to <c>true</c>.
         /// </summary>

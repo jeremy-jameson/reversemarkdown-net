@@ -16,6 +16,16 @@ namespace ReverseMarkdown.Converters
         {
             var content = DecodeHtml(node.InnerText);
 
+            if (Converter.Config.RemoveTrailingWhitespaceFromCode == true)
+            {
+                var trimmedLines = content
+                    .TrimEnd()
+                    .ReadLines()
+                    .Select(line => line.TrimEnd());
+
+                content = string.Join(Environment.NewLine, trimmedLines);
+            }
+
             var fencedCodeStartBlock = string.Empty;
             var fencedCodeEndBlock = string.Empty;
 

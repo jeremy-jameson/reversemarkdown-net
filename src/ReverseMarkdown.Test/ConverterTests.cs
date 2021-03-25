@@ -624,6 +624,42 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task WhenThereIsPreWithTrailingWhitespace_ThenPreserveTrailingWhitespace()
+        {
+            var html =
+@"Text before preformatted content.
+<pre>Line before another line with trailing spaces" + Environment.NewLine
++ new string(' ', 6) + Environment.NewLine
++ "Line with three trailing spaces   " + Environment.NewLine
++ "Line before other lines with trailing tabs and spaces" + Environment.NewLine
++ new string('\t', 2) + Environment.NewLine
++ new string(' ', 8) + Environment.NewLine
++ @"</pre>
+Text after preformatted content.";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task WhenRemoveTrailingWhitespaceFromCodeIsTrue_ThenTrimTrailingWhitespace()
+        {
+            var html =
+@"Text before preformatted content.
+<pre>Line before another line with trailing spaces" + Environment.NewLine
++ new string(' ', 6) + Environment.NewLine
++ "Line with three trailing spaces   " + Environment.NewLine
++ "Line before other lines with trailing tabs and spaces" + Environment.NewLine
++ new string('\t', 2) + Environment.NewLine
++ new string(' ', 8) + Environment.NewLine
++ @"</pre>
+Text after preformatted content.";
+
+            return CheckConversion(
+                html,
+                new Config() { RemoveTrailingWhitespaceFromCode = true });
+        }
+
+        [Fact]
         public Task WhenThereIsUnorderedList_ThenConvertToMarkdownList()
         {
             var html = "This text has unordered list.<ul><li>Item1</li><li>Item2</li></ul>";
