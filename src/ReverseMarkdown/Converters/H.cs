@@ -64,7 +64,7 @@ namespace ReverseMarkdown.Converters
                 headingText.Append("}");
             }
 
-            return headingText.ToString();
+            return headingText.ToString().Trim();
         }
 
         public override string GetMarkdownPrefix(HtmlNode node)
