@@ -386,6 +386,14 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task WhenThereAreTwoHeadingsSeparatedByText_ThenConvertToMarkdown()
+        {
+            var html = "<h1>Heading 1</h1>...<h2>Heading 2</h2>";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
         public Task WhenThereIsBlockquoteTag_ThenConvertToMarkdownBlockquote()
         {
             var html = "This text has <blockquote>blockquote</blockquote>. This text appear after header.";

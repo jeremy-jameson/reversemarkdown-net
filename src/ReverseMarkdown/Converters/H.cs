@@ -71,7 +71,12 @@ namespace ReverseMarkdown.Converters
         {
             var prefix = new string('#', System.Convert.ToInt32(node.Name.Substring(1)));
 
-            return $"{Environment.NewLine}{prefix} ";
+            return $"{Environment.NewLine}{Environment.NewLine}{prefix} ";
+        }
+
+        public override string GetMarkdownSuffix(HtmlNode node)
+        {
+            return Environment.NewLine + Environment.NewLine;
         }
     }
 }
