@@ -393,6 +393,15 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task WhenThereIsBlockquoteWithLineBreak_ThenConvertToMarkdownBlockquote()
+        {
+            var html =
+"Text before blockquote<blockquote>Line1<br>Line2</blockquote>Text after blockquote";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
         public Task WhenThereIsEmptyBlockquoteTag_ThenConvertToMarkdownBlockquote()
         {
             var html = "This text has <blockquote></blockquote>. This text appear after header.";

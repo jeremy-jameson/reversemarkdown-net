@@ -17,21 +17,54 @@ namespace ReverseMarkdown.Converters
 
             content = RemoveMultipleConsecutiveBlankLines(node, content);
 
-            const string linePrefix = "> ";
-
-            // get the lines based on carriage return and prefix each line
-            var lines = content.ReadLines().Select(
-                item => linePrefix + item + Environment.NewLine);
-
-            // join all the lines to a single line
-            var result = lines.Aggregate(string.Empty, (curr, next) => curr + next);
-
-            return result;
+            return PrefixBlockquoteLines(content);
         }
 
         public override string GetMarkdownPrefix(HtmlNode node)
         {
             return Environment.NewLine + Environment.NewLine;
+        }
+        public override string GetMarkdownSuffix(HtmlNode node)
+        {
+            return Environment.NewLine + Environment.NewLine;
+        }
+
+        private bool IsBlankLine(string line)
+        {
+            if (line == null)
+            {
+                return false;
+            }
+            else if (line == string.Empty
+                || (line.Length == 1 && line == "\n")
+                || (line.Length == 2 && line == "\r\n"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private string PrefixBlockquoteLine(string line)
+        {
+            if (IsBlankLine(line) == true)
+            {
+                return ">"; // omit trailing space
+            }
+
+            return "> " + line;
+        }
+
+        private string PrefixBlockquoteLines(string text)
+        {
+            // get the lines based on carriage return and prefix each line
+            var lines = text.ReadLines().Select(item =>
+                PrefixBlockquoteLine(item));
+
+            // join all the lines to a single line
+            var prefixedText = string.Join(Environment.NewLine, lines);
+
+            return prefixedText;
         }
 
         private string RemoveMultipleConsecutiveBlankLines(
