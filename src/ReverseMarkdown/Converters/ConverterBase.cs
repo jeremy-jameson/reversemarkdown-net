@@ -142,16 +142,11 @@ namespace ReverseMarkdown.Converters
         {
             Debug.Assert(node.Name == "li");
 
-            if (node.ParentNode != null && node.ParentNode.Name == "ol")
-            {
-                // index are zero based hence add one
-                var index = node.ParentNode.SelectNodes("./li").IndexOf(node) + 1;
-                return $"{index}. ";
-            }
-            else
-            {
-                return $"{Converter.Config.ListBulletChar} ";
-            }
+            var formatter = Converter.MarkdownFormatterFactory.Create(
+                node,
+                Converter.Config);
+
+            return formatter.GetMarkdownPrefixForListItem(node);
         }
 
         public virtual string GetMarkdownSuffix(HtmlNode node)

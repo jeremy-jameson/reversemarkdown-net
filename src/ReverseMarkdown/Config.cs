@@ -68,6 +68,20 @@ namespace ReverseMarkdown
         public char ListBulletChar { get; set; } = '-';
 
         /// <summary>
+        /// Option to specify numbering style for ordered lists. Defaults to
+        /// <see cref="ListNumberingStyle.Increment"/>.
+        /// </summary>
+        /// <remarks>
+        /// Set this to <see cref="ListNumberingStyle.AlwaysOne"/> to always
+        /// prefix numbered list items with <c>"1. "</c>. This avoids having to
+        /// renumber list items when subsequently inserting new items into the
+        /// list (and also simplifies version history when making changes to
+        /// Markdown lists over time).
+        /// </remarks>
+        public ListNumberingStyle ListNumberingStyle { get; set; } =
+            ListNumberingStyle.Increment;
+
+        /// <summary>
         /// Option to set a default GFM code block language if class based language markers are not available
         /// </summary>
         public string DefaultCodeBlockLanguage { get; set; }

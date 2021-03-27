@@ -161,6 +161,11 @@ namespace ReverseMarkdown
 
             if (node.ParentNode != null && node.ParentNode.Name == "ol")
             {
+                if (_config.ListNumberingStyle == ListNumberingStyle.AlwaysOne)
+                {
+                    return "1. ";
+                }
+
                 // index are zero based hence add one
                 var index = node.ParentNode.SelectNodes("./li").IndexOf(node) + 1;
                 return $"{index}. ";

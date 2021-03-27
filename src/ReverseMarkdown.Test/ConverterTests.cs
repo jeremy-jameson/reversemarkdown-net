@@ -691,6 +691,15 @@ Text after preformatted content.";
         }
 
         [Fact]
+        public Task WhenThereIsOrderedListWithListNumberingStyleAlwaysOne_ThenConvertToMarkdownList()
+        {
+            var html = "This text has ordered list.<ol><li>Item1</li><li>Item2</li></ol>";
+            return CheckConversion(
+                html,
+                new Config { ListNumberingStyle = ListNumberingStyle.AlwaysOne });
+        }
+
+        [Fact]
         public Task WhenThereIsOrderedListWithNestedUnorderedList_ThenConvertToMarkdownListWithNestedList()
         {
             var html = "This text has ordered list.<ol><li>OuterItem1<ul><li>InnerItem1</li><li>InnerItem2</li></ul></li><li>Item2</li></ol>";
