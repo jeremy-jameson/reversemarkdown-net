@@ -258,13 +258,17 @@ namespace ReverseMarkdown
 
             const string patternForAnyNonWhitespaceCharacters = @"[\S]*";
 
+            const string patternForOptionalLeadingSpaces = "(?:^ +)*";
+
             const string patternForMarkdownImagesAndLinks =
-                patternForAnyNonWhitespaceCharacters
+                patternForOptionalLeadingSpaces
+                + patternForAnyNonWhitespaceCharacters
                 + @"!?\[(?:.*?)\]\((?:.*?)\)"
                 + patternForAnyNonWhitespaceCharacters;
 
             const string patternForInlineCode =
-                @"[\S]*?`.*?`"
+                patternForOptionalLeadingSpaces
+                + @"[\S]*?`.*?`"
                 + patternForAnyNonWhitespaceCharacters;
 
             const string pattern =

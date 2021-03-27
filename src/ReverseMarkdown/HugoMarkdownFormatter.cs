@@ -90,17 +90,22 @@ namespace ReverseMarkdown
 
             const string patternForAnyNonWhitespaceCharacters = @"[\S]*";
 
+            const string patternForOptionalLeadingSpaces = "(?:^ +)*"; 
+
             const string patternForMarkdownImagesAndLinks =
-                patternForAnyNonWhitespaceCharacters
+                patternForOptionalLeadingSpaces
+                + patternForAnyNonWhitespaceCharacters
                 + @"!?\[(?:.*?)\]\((?:.*?)\)"
                 + patternForAnyNonWhitespaceCharacters;
 
             const string patternForInlineCode =
-                @"[\S]*?`.*?`"
+                patternForOptionalLeadingSpaces
+                + @"[\S]*?`.*?`"
                 + patternForAnyNonWhitespaceCharacters;
 
             const string patternForHugoShortcodes =
-                patternForAnyNonWhitespaceCharacters
+                patternForOptionalLeadingSpaces
+                + patternForAnyNonWhitespaceCharacters
                 + @"{{< .*? >}}"
                 + patternForAnyNonWhitespaceCharacters;
 
@@ -248,6 +253,15 @@ namespace ReverseMarkdown
             for (var i = 0; i < chunks.Count(); i++)
             {
                 var chunk = chunks[i];
+
+                if (chunk.StartsWith(" ") == true)
+                {
+                    // If the chunk starts with a space, it represents text that
+                    // has already been wrapped (e.g. a Hugo shortcode in a list
+                    // item) and therefore cannot be parsed into fine-grained
+                    // chunks.
+                    continue;
+                }
 
                 if (chunk.Contains("{{< ") == true)
                 {

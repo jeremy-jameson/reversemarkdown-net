@@ -449,6 +449,22 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public void ParseChunks_WithIndentedInlineImage()
+        {
+            // Image within a list item that has already been wrapped will be
+            // indented by the length of the list item prefix (e.g. "1. ")
+            var text = "   ![Example image](http://example.com/img.png)";
+
+            var expected = new string[] { text };
+
+            ITextFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.ParseChunks(text);
+
+            Assert.Equal<string>(expected, actual);
+        }
+
+        [Fact]
         public void ParseChunks_WithInlineLink()
         {
             var text = "foo bar [Example link](http://example.com) foobar";
@@ -498,6 +514,22 @@ namespace ReverseMarkdown.Test
 
             var expected = new string[] {
                 "foo", "(\"`var i = 1;`\")", "bar" };
+
+            ITextFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.ParseChunks(text);
+
+            Assert.Equal<string>(expected, actual);
+        }
+
+        [Fact]
+        public void ParseChunks_WithIndentedInlineCode()
+        {
+            // Inline code within a list item that has already been wrapped will
+            // be indented by the length of the list item prefix (e.g. "1. ")
+            var text = "   `stsadm.exe -o execadmsvcjobs`";
+
+            var expected = new string[] { text };
 
             ITextFormatter formatter = CreateTestFormatter();
 
