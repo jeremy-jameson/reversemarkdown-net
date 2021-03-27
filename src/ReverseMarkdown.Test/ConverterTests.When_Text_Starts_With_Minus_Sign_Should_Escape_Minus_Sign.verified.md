@@ -1,0 +1,1 @@
+\- Some text from a Git commit message

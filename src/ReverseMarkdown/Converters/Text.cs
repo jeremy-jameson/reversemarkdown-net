@@ -48,7 +48,12 @@ namespace ReverseMarkdown.Converters
 
         private string EscapeKeyChars(string content)
         {
-            foreach(var item in _escapedKeyChars)
+            // Escape '+' and '-' at beginning of line (to avoid mistaking plain
+            // text for a list)
+            content = Regex.Replace(content, @"^\+ ", @"\+ ");
+            content = Regex.Replace(content, "^- ", @"\- ");
+
+            foreach (var item in _escapedKeyChars)
             {
                 content = content.Replace(item.Key, item.Value);
             }

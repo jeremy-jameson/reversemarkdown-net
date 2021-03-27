@@ -1,0 +1,1 @@
+\+ Some text from a stack trace in a PowerShell error message

@@ -1558,6 +1558,24 @@ Text after preformatted content.";
             return CheckConversion(html);
         }
 
+        [Fact]
+        public Task When_Text_Starts_With_Minus_Sign_Should_Escape_Minus_Sign()
+        {
+            var html =
+                "- Some text from a Git commit message";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_Text_Starts_With_Plus_Sign_Should_Escape_Plus_Sign()
+        {
+            var html =
+                "+ Some text from a stack trace in a PowerShell error message";
+
+            return CheckConversion(html);
+        }
+
         #region Whitespace tests
 
         [Fact]
