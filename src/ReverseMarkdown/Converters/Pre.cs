@@ -69,6 +69,11 @@ namespace ReverseMarkdown.Converters
             return $"{Environment.NewLine}{Environment.NewLine}";
         }
 
+        public override string GetMarkdownSuffix(HtmlNode node)
+        {
+            return $"{Environment.NewLine}{Environment.NewLine}";
+        }
+
         private string GetLanguage(HtmlNode node)
         {
             var language = GetLanguageFromHighlightClassAttribute(node);

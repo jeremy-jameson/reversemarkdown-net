@@ -40,7 +40,7 @@ namespace ReverseMarkdown.Converters
             content = formatter.IndentLines(
                 content, indentation, indentBlankLines: false);
 
-            return content.Chomp();
+            return content.TrimStart();
         }
 
         public override string GetMarkdownPrefix(HtmlNode node)
