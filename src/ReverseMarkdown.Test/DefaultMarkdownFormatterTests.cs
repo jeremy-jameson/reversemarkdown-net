@@ -462,6 +462,50 @@ namespace ReverseMarkdown.Test
             Assert.Equal<string>(expected, actual);
         }
 
+        [Fact]
+        public void ParseChunks_WithInlineCode()
+        {
+            var text = "use `stsadm.exe -o execadmsvcjobs` to wait";
+            var expected = new string[] {
+                "use", "`stsadm.exe -o execadmsvcjobs`", "to", "wait" };
+
+            ITextFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.ParseChunks(text);
+
+            Assert.Equal<string>(expected, actual);
+        }
+
+        [Fact]
+        public void ParseChunks_WithTwoInlineCodeSegments()
+        {
+            var text = "First: `var i = 1;`, second: `if (i == 1)`";
+
+            var expected = new string[] {
+                "First:", "`var i = 1;`,", "second:", "`if (i == 1)`" };
+
+            ITextFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.ParseChunks(text);
+
+            Assert.Equal<string>(expected, actual);
+        }
+
+        [Fact]
+        public void ParseChunks_WithInlineCodeInQuotesAndParenthenses()
+        {
+            var text = "foo (\"`var i = 1;`\") bar";
+
+            var expected = new string[] {
+                "foo", "(\"`var i = 1;`\")", "bar" };
+
+            ITextFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.ParseChunks(text);
+
+            Assert.Equal<string>(expected, actual);
+        }
+
         #endregion
 
         #region RemoveMultipleConsecutiveBlankLines

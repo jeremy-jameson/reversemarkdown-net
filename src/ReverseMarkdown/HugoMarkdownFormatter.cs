@@ -1,4 +1,4 @@
-﻿using HtmlAgilityPack;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -61,61 +61,61 @@ namespace ReverseMarkdown
 
             // The following regular expression splits the string:
             //
-            // - at each space character
-            // - or
             // - whenever a Markdown image (e.g.
             //     "![Example image](http://example.com/img.png)") or link
             //     (e.g. "[Example link](http://example.com)") is encountered
             // - or
+            // - whenever inline code is encountered (e.g. "`var i = 1;`")
+            // - or
             // - whenever a Hugo shortcode (e.g. "{{< gist spf13 7896402 >}}")
             //     is encountered
+            // - or
+            // - at each space character
             //
             // This creates "chunks" from:
             //
-            // - typical words (separated by spaces)
-            // - or
             // - entire Markdown images/links (identified by the combination of
             //     square brackets and parentheses and optional preceeding
             //     exclamation mark -- in the case of an image)
             // - or
+            // - entire inline code segments (identified by surrounding
+            //     backquotes)
+            // - or
             // - entire Hugo shortcodes (identified by the opening "{{<" and
             //     closing ">}}")
-            //
-            // There might be a better way, but this works for the purpose
-            // of keeping Markdown images/links (with spaces in the image/link
-            // text) and Hugo shortcodes from wrapping across multiple lines.
-            //
-            // The "Where" filter is required to ignore empty strings included
-            // as a result of the Markdown image/link and Hugo shortcode
-            // portions of the regular expression pattern
+            // - or
+            // - typical words (separated by spaces)
 
-            const string patternForHugoShortcodeStart = @"[\S]*\{\{< ";
-            const string patternForHugoShortcodeEnd = @" >\}\}[\S]*";
+            const string patternForItemsSeparatedBySpaces = "[^ ]+";
+
+            const string patternForAnyNonWhitespaceCharacters = @"[\S]*";
+
+            const string patternForMarkdownImagesAndLinks =
+                patternForAnyNonWhitespaceCharacters
+                + @"!?\[(?:.*?)\]\((?:.*?)\)"
+                + patternForAnyNonWhitespaceCharacters;
+
+            const string patternForInlineCode =
+                @"[\S]*?`.*?`"
+                + patternForAnyNonWhitespaceCharacters;
 
             const string patternForHugoShortcodes =
-                "(?:("
-                    + patternForHugoShortcodeStart
-                    + ".*?"
-                    + patternForHugoShortcodeEnd
-                + "))";
+                patternForAnyNonWhitespaceCharacters
+                + @"{{< .*? >}}"
+                + patternForAnyNonWhitespaceCharacters;
 
-            var pattern =
-                " " // space --> regular word "chunk"
-                + "|" // or
-                // "![...](...)" --> Markdown image "chunk"
-                // "[...](...)" --> Markdown link "chunk"
-                + @"([\S]*!?\[(?:.*?)\]\((?:.*?)\)[\S]*)"
-                + "|" // or
-                // "{{< ... >}}" --> Hugo shortcode "chunk"
+            const string pattern =
+                patternForMarkdownImagesAndLinks
+                + "|"
+                + patternForInlineCode
+                + "|"
                 + patternForHugoShortcodes
-                ;
+                + "|"
+                + patternForItemsSeparatedBySpaces;
 
-            var chunks =
-                Regex.Split(
-                    text,
-                    pattern,
-                    RegexOptions.Compiled)
-                .Where(x => x != string.Empty)
+            var chunks = Regex.Matches(text, pattern, RegexOptions.Compiled)
+                .Cast<Match>()
+                .Select(x => x.Value)
                 .ToList();
 
             // At this point, each Hugo shortcode is a separate chunk

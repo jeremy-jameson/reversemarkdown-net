@@ -233,30 +233,50 @@ namespace ReverseMarkdown
                 return new string[] { string.Empty };
             }
 
-            // The following regular expression splits the string at each space
-            // character or whenever a Markdown image (e.g.
-            // "![Example image](http://example.com/img.png)") or link (e.g.
-            // "[Example link](http://example.com)") is encountered.
+            // The following regular expression splits the string:
             //
-            // This creates "chunks" from typical words (separated by spaces)
-            // as well as entire Markdown images/links (identified by the
-            // combination of square brackets and parentheses and optional
-            // preceeding exclamation mark -- in the case of an image).
+            // - whenever a Markdown image (e.g.
+            //     "![Example image](http://example.com/img.png)") or link
+            //     (e.g. "[Example link](http://example.com)") is encountered
+            // - or
+            // - whenever inline code is encountered (e.g. "`var i = 1;`")
+            // - or
+            // - at each space character
             //
-            // There might be a better way, but this works for the purpose
-            // of keeping Markdown images/links (with spaces in the image/link
-            // text) from wrapping across multiple lines.
+            // This creates "chunks" from:
             //
-            // The "Where" filter is required to ignore empty strings included
-            // as a result of the Markdown image/link portion of the regular
-            // expression pattern.
+            // - entire Markdown images/links (identified by the combination of
+            //     square brackets and parentheses and optional preceeding
+            //     exclamation mark -- in the case of an image)
+            // - or
+            // - entire inline code segments (identified by surrounding
+            //     backquotes)
+            // - or
+            // - typical words (separated by spaces)
 
-            var chunks =
-                Regex.Split(
-                    text,
-                    @" |([\S]*!?\[(?:.*?)\]\((?:.*?)\)[\S]*)",
-                    RegexOptions.Compiled)
-                .Where(x => x != string.Empty)
+            const string patternForItemsSeparatedBySpaces = "[^ ]+";
+
+            const string patternForAnyNonWhitespaceCharacters = @"[\S]*";
+
+            const string patternForMarkdownImagesAndLinks =
+                patternForAnyNonWhitespaceCharacters
+                + @"!?\[(?:.*?)\]\((?:.*?)\)"
+                + patternForAnyNonWhitespaceCharacters;
+
+            const string patternForInlineCode =
+                @"[\S]*?`.*?`"
+                + patternForAnyNonWhitespaceCharacters;
+
+            const string pattern =
+                patternForMarkdownImagesAndLinks
+                + "|"
+                + patternForInlineCode
+                + "|"
+                + patternForItemsSeparatedBySpaces;
+
+            var chunks = Regex.Matches(text, pattern, RegexOptions.Compiled)
+                .Cast<Match>()
+                .Select(x => x.Value)
                 .ToArray();
 
             return chunks;
