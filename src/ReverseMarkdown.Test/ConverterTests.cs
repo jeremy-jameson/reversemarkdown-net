@@ -214,8 +214,8 @@ namespace ReverseMarkdown.Test
             Assert.Equal("[http://example.com/path/file name.docx](http://example.com/path/file%20name.docx)", result, StringComparer.OrdinalIgnoreCase);
 
             //The string is an absolute Uri that represents an implicit file Uri.
-            var result1 = converter.Convert(@"<a href=""c:\\directory\filename"">	c:\\directory\filename</a>");
-            Assert.Equal(@"[c:\\directory\filename](c:\\directory\filename)", result1, StringComparer.OrdinalIgnoreCase);
+            var result1 = converter.Convert(@"<a href=""c:\directory\filename"">	c:\directory\filename</a>");
+            Assert.Equal(@"[c:\directory\filename](c:\directory\filename)", result1, StringComparer.OrdinalIgnoreCase);
 
             //The string is an absolute URI that is missing a slash before the path.
             var result2 = converter.Convert(@"<a href=""file://c:/directory/filename"">file://c:/directory/filename</a>");
@@ -223,7 +223,7 @@ namespace ReverseMarkdown.Test
 
             //The string contains unescaped backslashes even if they are treated as forward slashes.
             var result3 = converter.Convert(@"<a href=""http:\\host/path/file"">http:\\host/path/file</a>");
-            Assert.Equal(@"[http:\\host/path/file](http:\\host/path/file)", result3, StringComparer.OrdinalIgnoreCase);
+            Assert.Equal(@"[http:\\\\host/path/file](http:\\host/path/file)", result3, StringComparer.OrdinalIgnoreCase);
         }
 
         [Fact]
@@ -1581,6 +1581,27 @@ Text after preformatted content.";
         {
             var html =
                 "+ Some text from a stack trace in a PowerShell error message";
+
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task When_Text_Has_Specific_Backslash_Combinations_Should_Escape_Backslashes()
+        {
+            var html =
+@"<ul>
+    <li>\\beast\Backups\jjameson1\BackedUp</li>
+    <li>C:\&gt;</li>
+    <li>E:\NotBackedUp\...</li>
+    <li>Archive\{year}\{month}\{day}</li>
+    <li>\\beast\Users$\%USERNAME%\Application Data</li>
+    <li>..\..\..\CoreServices\bin\%BUILD_CONFIGURATION%\Fabrikam.Demo.CoreServices.dll</li>
+    <li>..\..\..\Portal\Web\12\TEMPLATE\LAYOUTS\Fabrikam\</li>
+    <li>\Windows\Installer\$PatchCache$</li>
+    <li>&lt;configuration&gt;\&lt;system.web&gt;\&lt;httpModules&gt;</li>
+    <li>{build version or branch folder}\[Source]\Deployment Files\Scripts</li>
+    <li><strong>..\..\..\Portal\Web\12\TEMPLATE\LAYOUTS\Fabrikam\</strong></li>
+</ul>";
 
             return CheckConversion(html);
         }

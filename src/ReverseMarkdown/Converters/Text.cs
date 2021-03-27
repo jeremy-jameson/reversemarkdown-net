@@ -10,6 +10,17 @@ namespace ReverseMarkdown.Converters
 
         public Text(Converter converter) : base(converter)
         {
+            // Note the order of items is important -- need to escape double
+            // backslashes *before* escaping other items
+            _escapedKeyChars.Add(@"\\", @"\\\\");
+
+            _escapedKeyChars.Add(@"\$", @"\\$");
+            _escapedKeyChars.Add(@"\%", @"\\%");
+            _escapedKeyChars.Add(@"\&", @"\\&");
+            _escapedKeyChars.Add(@"\.", @"\\.");
+            _escapedKeyChars.Add(@"\[", @"\\[");
+            _escapedKeyChars.Add(@"\{", @"\\{");
+
             _escapedKeyChars.Add("*", @"\*");
             _escapedKeyChars.Add("_", @"\_");
 
