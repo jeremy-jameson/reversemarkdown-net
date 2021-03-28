@@ -10,19 +10,6 @@ namespace ReverseMarkdown.Converters
 
         public Text(Converter converter) : base(converter)
         {
-            // Note the order of items is important -- need to escape double
-            // backslashes *before* escaping other items
-            _escapedKeyChars.Add(@"\\", @"\\\\");
-
-            _escapedKeyChars.Add(@"\$", @"\\$");
-            _escapedKeyChars.Add(@"\%", @"\\%");
-            _escapedKeyChars.Add(@"\&", @"\\&");
-            _escapedKeyChars.Add(@"\.", @"\\.");
-            _escapedKeyChars.Add(@"\[", @"\\[");
-            _escapedKeyChars.Add(@"\{", @"\\{");
-
-            _escapedKeyChars.Add("*", @"\*");
-
             Converter.Register("#text", this);
         }
 
@@ -50,34 +37,22 @@ namespace ReverseMarkdown.Converters
                 .Replace("%3C", "&lt;")
                 .Replace("%3E", "&gt;");
 
-            content = EscapeKeyChars(content);
+            content = ReplaceTextPatterns(content);
 
             return content;
         }
 
-        private string EscapeKeyChars(string content)
+        private string ReplaceTextPatterns(string content)
         {
-            // Escape '+' and '-' at beginning of line (to avoid mistaking plain
-            // text for a list)
-            content = Regex.Replace(content, @"^\+ ", @"\+ ");
-            content = Regex.Replace(content, "^- ", @"\- ");
+            var replacementPatterns =
+                Converter.Config.TextReplacementPatterns;
 
-            // Escape '_' that is *not* followed by a word character
-            // Note: "[^\w]" is equivalent to [^a-zA-Z0-9_]
-            content = Regex.Replace(content, @"(_[^\w])", @"\$1");
-
-            // Escape '_' after a space
-            content = Regex.Replace(content, @" _", @" \_");
-
-            // Escape '_' at beginning of line
-            content = Regex.Replace(content, @"(^_)", @"\$1");
-
-            // Escape double underscores
-            content = Regex.Replace(content, @"__", @"\_\_");
-
-            foreach (var item in _escapedKeyChars)
+            foreach (var replacementPattern in replacementPatterns)
             {
-                content = content.Replace(item.Key, item.Value);
+                var pattern = replacementPattern.Key;
+                var replacement = replacementPattern.Value;
+
+                content = Regex.Replace(content, pattern, replacement);
             }
             
             return content;

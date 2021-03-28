@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ReverseMarkdown
@@ -139,6 +140,71 @@ namespace ReverseMarkdown
             EmptyRow
         }
 
+        /// <summary>
+        /// Specifies the sequence of regular expression pattern replacements to
+        /// apply to <c>#text</c> nodes in the HTML source.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Replacements are performed in the order in which they are added to
+        /// the collection -- in other words, the order of the items is
+        /// important (if subsequent replacements match the result of a previous
+        /// replacement).
+        /// </para>
+        /// <para>
+        /// The default items include patterns for replacing Markdown special
+        /// characters. For example, asterisks (<c>'*'</c>) in the source HTML
+        /// are escaped when converting to Markdown by inserting a backslash
+        /// before the asterisk (<c>@"\*"</c>).
+        /// </para>
+        /// <para>
+        /// Note that special characters in regular expressions must be escaped
+        /// in the "pattern" (i.e. the dictionary key). For example, <c>'+'</c>
+        /// and <c>'*'</c> have special meaning in regular expressions and are
+        /// therefore escaped in patterns using a backslash (<c>'\'</c>).
+        /// Similarly, a backslash must also be escaped in patterns
+        /// (<c>"\\"</c>) -- but it is not escaped when specifying the
+        /// replacement. For example, a replacement of <c>@"\$1"</c> simply
+        /// inserts a backslash before the group matched by the pattern -- where
+        /// the "group" is specified using parentheses.
+        /// </para>
+        /// </remarks>
+        public Dictionary<string, string> TextReplacementPatterns =
+            new Dictionary<string, string>()
+        {
+            // Escape '+' and '-' at beginning of line (to avoid mistaking plain
+            // text for a list)
+            { @"^(\+ )", @"\$1" },
+            { "^(- )", @"\$1" },
+
+            // Escape '_' that is *not* followed by a word character
+            // Note: "[^\w]" is equivalent to [^a-zA-Z0-9_]
+            { @"(_[^\w])", @"\$1" },
+
+            // Escape '_' after a space
+            { @" _", @" \_" },
+
+            // Escape '_' at beginning of line
+            { @"(^_)", @"\$1" },
+
+            // Escape double underscores
+            { @"__", @"\_\_" },
+
+            // Important: Escape double backslashes *before* escaping other
+            // items
+            { @"(\\\\)", @"\\$1" }, // replace two backslashes with four (\\\\)
+
+            // Escape '\' that is followed by specific characters
+            { @"(\\\$)", @"\$1" }, // escape '\' followed by '$'
+            { @"(\\\%)", @"\$1" }, // escape '\' followed by '%'
+            { @"(\\\&)", @"\$1" }, // escape '\' followed by '&'
+            { @"(\\\.)", @"\$1" }, // escape '\' followed by '.'
+            { @"(\\\[)", @"\$1" }, // escape '\' followed by '['
+            { @"(\\\{)", @"\$1" }, // escape '\' followed by '{'
+            
+            // Escape all asterisks
+            { @"(\*)", @"\$1" }
+        };
 
         /// <summary>
         /// Determines whether url is allowed: WhitelistUriSchemes contains no elements or contains passed url.
