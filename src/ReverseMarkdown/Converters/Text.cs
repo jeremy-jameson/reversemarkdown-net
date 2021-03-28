@@ -67,13 +67,13 @@ namespace ReverseMarkdown.Converters
             content = Regex.Replace(content, @"(_[^\w])", @"\$1");
 
             // Escape '_' after a space
-            content = Regex.Replace(content, @"( _)", @" \_");
+            content = Regex.Replace(content, @" _", @" \_");
 
             // Escape '_' at beginning of line
             content = Regex.Replace(content, @"(^_)", @"\$1");
 
             // Escape double underscores
-            content = Regex.Replace(content, @"(__)", @"\_\_");
+            content = Regex.Replace(content, @"__", @"\_\_");
 
             foreach (var item in _escapedKeyChars)
             {
