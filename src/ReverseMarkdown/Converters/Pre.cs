@@ -26,6 +26,14 @@ namespace ReverseMarkdown.Converters
                 content = string.Join(Environment.NewLine, trimmedLines);
             }
 
+            if (Converter.Config.RemoveExcessIndentationFromCode == true)
+            {
+                var formatter = Converter.MarkdownFormatterFactory.Create(
+                    node, Converter.Config);
+
+                content = formatter.RemoveExcessIndentation(content);
+            }
+
             var fencedCodeStartBlock = string.Empty;
             var fencedCodeEndBlock = string.Empty;
 

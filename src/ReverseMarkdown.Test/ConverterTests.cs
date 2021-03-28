@@ -624,6 +624,23 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task WhenRemoveExcessIndentationFromCodeIsTrue_ThenTrimTrailingWhitespace()
+        {
+            var html =
+@"<pre>        public void Main()
+        {
+            var i = 1;
+        {
+</pre>";
+
+            return CheckConversion(
+                html,
+                new Config() {
+                    GithubFlavored = true,
+                    RemoveExcessIndentationFromCode = true });
+        }
+
+        [Fact]
         public Task WhenThereIsPreWithTrailingWhitespace_ThenPreserveTrailingWhitespace()
         {
             var html =

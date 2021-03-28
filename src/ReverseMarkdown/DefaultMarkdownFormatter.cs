@@ -292,6 +292,73 @@ namespace ReverseMarkdown
         }
 
         /// <summary>
+        /// Removes excess indentation from the specified code block.
+        /// </summary>
+        /// <param name="codeBlock">The lines of code to format.</param>
+        public string RemoveExcessIndentation(string codeBlock)
+        {
+            if (codeBlock == null)
+            {
+                throw new ArgumentNullException(nameof(codeBlock));
+            }
+
+            if (string.IsNullOrWhiteSpace(codeBlock) == true)
+            {
+                return codeBlock;
+            }
+
+            var lines = codeBlock.ReadLines().ToList();
+
+            // Determine how many spaces can be safely removed from *all*
+            // (non-whitespace) lines in the code block (where "safely"
+            // means without changing the structure of the code).
+            //
+            // Note: A value of "0" means "no excess indentation"
+
+            var excessIndentation = -1;
+
+            lines.ForEach(line =>
+            {
+                // Ignore blank lines (or lines containing only whitespace)
+                if (string.IsNullOrWhiteSpace(line) == true)
+                {
+                    return;
+                }
+
+                var indentation =
+                    line
+                    .TakeWhile<char>(c => c == ' ')
+                    .Count();
+
+                if (excessIndentation == -1
+                    || indentation < excessIndentation)
+                {
+                    excessIndentation = indentation;
+                }
+            });
+
+            List<string> trimmedLines;
+
+            if (excessIndentation > 0)
+            {
+                trimmedLines =
+                    lines
+                    .Select(line =>
+                        string.IsNullOrWhiteSpace(line) == true ?
+                            string.Empty : line.Substring(excessIndentation))
+                    .ToList();
+            }
+            else
+            {
+                trimmedLines = lines;
+            }
+
+            codeBlock = string.Join(Environment.NewLine, trimmedLines);
+
+            return codeBlock;
+        }
+
+        /// <summary>
         /// Removes multiple consecutive blank lines from the Markdown.
         /// </summary>
         /// <remarks>

@@ -18,6 +18,12 @@ namespace ReverseMarkdown
         public bool RemoveComments { get; set; } = false;
 
         /// <summary>
+        /// If <c>true</c>, excess spaces at the start of each line in code
+        /// blocks are removed from the Markdown. Defaults to <c>false</c>.
+        /// </summary>
+        public bool RemoveExcessIndentationFromCode { get; set; } = false;
+
+        /// <summary>
         /// If <c>true</c>, trailing whitespace in code blocks is removed from
         /// the Markdown. Defaults to <c>false</c>.
         /// </summary>

@@ -46,6 +46,12 @@ namespace ReverseMarkdown
         string GetMarkdownPrefixForListItem(HtmlNode node);
 
         /// <summary>
+        /// Removes excess indentation from the specified code block.
+        /// </summary>
+        /// <param name="codeBlock">The lines of code to format.</param>
+        string RemoveExcessIndentation(string codeBlock);
+
+        /// <summary>
         /// Removes multiple consecutive blank lines from the Markdown.
         /// </summary>
         /// <remarks>

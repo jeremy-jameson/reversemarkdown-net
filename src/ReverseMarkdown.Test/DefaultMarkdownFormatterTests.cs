@@ -540,6 +540,128 @@ namespace ReverseMarkdown.Test
 
         #endregion
 
+        #region RemoveExcessIndentation
+
+        [Fact]
+        public void RemoveExcessIndentation_ThrowsWhenCodeBlockIsNull()
+        {
+            string codeBlock = null;
+            var expectedExceptionText = "Value cannot be null.";
+
+            IMarkdownFormatter formatter = CreateTestFormatter();
+
+            var ex = Assert.Throws<ArgumentNullException>(() =>
+                formatter.RemoveExcessIndentation(codeBlock));
+
+            Assert.Equal("codeBlock", ex.ParamName);
+            Assert.StartsWith(expectedExceptionText, ex.Message);
+        }
+
+        [Fact]
+        public void RemoveExcessIndentation_WithEmptyString()
+        {
+            var codeBlock = string.Empty;
+            var expected = codeBlock;
+
+            IMarkdownFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.RemoveExcessIndentation(
+                codeBlock);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void RemoveExcessIndentation_WithOneIndentedLine()
+        {
+            var codeBlock = @"    var i = 1;";
+
+            var expected = codeBlock.TrimStart();
+
+            IMarkdownFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.RemoveExcessIndentation(
+                codeBlock);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void RemoveExcessIndentation_WithTwoIndentedLines()
+        {
+            var codeBlock =
+@"    var i = 1;
+    i++;";
+
+            var expected =
+@"var i = 1;
+i++;";
+
+            IMarkdownFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.RemoveExcessIndentation(
+                codeBlock);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void RemoveExcessIndentation_WithBlankLineBetweenLines()
+        {
+            var codeBlock =
+@"    var i = 1;
+
+    i++;";
+
+            var expected =
+@"var i = 1;
+
+i++;";
+
+            IMarkdownFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.RemoveExcessIndentation(
+                codeBlock);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void RemoveExcessIndentation_WithIndentedFirstLineOnly()
+        {
+            var codeBlock =
+@"    var i = 1;
+i++;";
+
+            var expected = codeBlock;
+
+            IMarkdownFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.RemoveExcessIndentation(
+                codeBlock);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void RemoveExcessIndentation_WithIndentedSecondLineOnly()
+        {
+            var codeBlock =
+@"var i = 1;
+    i++;";
+
+            var expected = codeBlock;
+
+            IMarkdownFormatter formatter = CreateTestFormatter();
+
+            var actual = formatter.RemoveExcessIndentation(
+                codeBlock);
+
+            Assert.Equal(expected, actual);
+        }
+
+        #endregion
+
         #region RemoveMultipleConsecutiveBlankLines
 
         [Fact]
