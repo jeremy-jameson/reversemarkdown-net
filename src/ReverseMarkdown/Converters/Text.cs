@@ -49,10 +49,10 @@ namespace ReverseMarkdown.Converters
 
             foreach (var replacementPattern in replacementPatterns)
             {
-                var pattern = replacementPattern.Key;
-                var replacement = replacementPattern.Value;
+                var regex = replacementPattern.RegularExpression;
+                var replacement = replacementPattern.Replacement;
 
-                content = Regex.Replace(content, pattern, replacement);
+                content = regex.Replace(content, replacement);
             }
             
             return content;

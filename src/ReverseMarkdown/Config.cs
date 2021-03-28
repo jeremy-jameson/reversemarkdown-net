@@ -169,41 +169,41 @@ namespace ReverseMarkdown
         /// the "group" is specified using parentheses.
         /// </para>
         /// </remarks>
-        public Dictionary<string, string> TextReplacementPatterns =
-            new Dictionary<string, string>()
+        public List<TextReplacementPattern> TextReplacementPatterns =
+            new List<TextReplacementPattern>()
         {
             // Escape '+' and '-' at beginning of line (to avoid mistaking plain
             // text for a list)
-            { @"^(\+ )", @"\$1" },
-            { "^(- )", @"\$1" },
+            new TextReplacementPattern(@"^(\+ )", @"\$1"),
+            new TextReplacementPattern("^(- )", @"\$1"),
 
             // Escape '_' that is *not* followed by a word character
             // Note: "[^\w]" is equivalent to [^a-zA-Z0-9_]
-            { @"(_[^\w])", @"\$1" },
+            new TextReplacementPattern(@"(_[^\w])", @"\$1"),
 
             // Escape '_' after a space
-            { @" _", @" \_" },
+            new TextReplacementPattern(@" _", @" \_"),
 
             // Escape '_' at beginning of line
-            { @"(^_)", @"\$1" },
+            new TextReplacementPattern(@"(^_)", @"\$1"),
 
             // Escape double underscores
-            { @"__", @"\_\_" },
+            new TextReplacementPattern(@"__", @"\_\_"),
 
             // Important: Escape double backslashes *before* escaping other
             // items
-            { @"(\\\\)", @"\\$1" }, // replace two backslashes with four (\\\\)
+            new TextReplacementPattern(@"(\\\\)", @"\\$1"), // replace two backslashes with four (\\\\)
 
             // Escape '\' that is followed by specific characters
-            { @"(\\\$)", @"\$1" }, // escape '\' followed by '$'
-            { @"(\\\%)", @"\$1" }, // escape '\' followed by '%'
-            { @"(\\\&)", @"\$1" }, // escape '\' followed by '&'
-            { @"(\\\.)", @"\$1" }, // escape '\' followed by '.'
-            { @"(\\\[)", @"\$1" }, // escape '\' followed by '['
-            { @"(\\\{)", @"\$1" }, // escape '\' followed by '{'
+            new TextReplacementPattern(@"(\\\$)", @"\$1"), // escape '\' followed by '$'
+            new TextReplacementPattern(@"(\\\%)", @"\$1"), // escape '\' followed by '%'
+            new TextReplacementPattern(@"(\\\&)", @"\$1"), // escape '\' followed by '&'
+            new TextReplacementPattern(@"(\\\.)", @"\$1"), // escape '\' followed by '.'
+            new TextReplacementPattern(@"(\\\[)", @"\$1"), // escape '\' followed by '['
+            new TextReplacementPattern(@"(\\\{)", @"\$1"), // escape '\' followed by '{'
             
             // Escape all asterisks
-            { @"(\*)", @"\$1" }
+            new TextReplacementPattern(@"(\*)", @"\$1")
         };
 
         /// <summary>
