@@ -172,13 +172,27 @@ namespace ReverseMarkdown
         public List<TextReplacementPattern> TextReplacementPatterns =
             new List<TextReplacementPattern>()
         {
+            // Important: Escape double backslashes *before* escaping all other
+            // items
+            //
+            // Replace two backslashes (\\) with four (\\\\)
+            new TextReplacementPattern(@"(\\\\)", @"\\$1"),
+
+            // Important: Escape single backslashes -- as necessary -- *before*
+            // escaping other items
+            //
+            // Escape '\' that is *not* followed by a word character (\w),
+            // whitespace (\s), a double quote ("), or another backslash (\)
+            //
+            // Note: "[^\w]" is equivalent to [^a-zA-Z0-9_]
+            new TextReplacementPattern(@"(\\[^\w\s""\\])", @"\$1"),
+
             // Escape '+' and '-' at beginning of line (to avoid mistaking plain
             // text for a list)
             new TextReplacementPattern(@"^(\+ )", @"\$1"),
             new TextReplacementPattern("^(- )", @"\$1"),
 
             // Escape '_' that is *not* followed by a word character
-            // Note: "[^\w]" is equivalent to [^a-zA-Z0-9_]
             new TextReplacementPattern(@"(_[^\w])", @"\$1"),
 
             // Escape '_' after a space
@@ -189,18 +203,6 @@ namespace ReverseMarkdown
 
             // Escape double underscores
             new TextReplacementPattern(@"__", @"\_\_"),
-
-            // Important: Escape double backslashes *before* escaping other
-            // items
-            new TextReplacementPattern(@"(\\\\)", @"\\$1"), // replace two backslashes with four (\\\\)
-
-            // Escape '\' that is followed by specific characters
-            new TextReplacementPattern(@"(\\\$)", @"\$1"), // escape '\' followed by '$'
-            new TextReplacementPattern(@"(\\\%)", @"\$1"), // escape '\' followed by '%'
-            new TextReplacementPattern(@"(\\\&)", @"\$1"), // escape '\' followed by '&'
-            new TextReplacementPattern(@"(\\\.)", @"\$1"), // escape '\' followed by '.'
-            new TextReplacementPattern(@"(\\\[)", @"\$1"), // escape '\' followed by '['
-            new TextReplacementPattern(@"(\\\{)", @"\$1"), // escape '\' followed by '{'
             
             // Escape all asterisks
             new TextReplacementPattern(@"(\*)", @"\$1")
