@@ -52,7 +52,6 @@ namespace ReverseMarkdown.Converters
                 .Replace("%3E", "&gt;");
 
             content = EscapeKeyChars(content);
-            content = PreserveKeyCharsWithinBackTicks(content);
 
             return content;
         }
@@ -87,15 +86,6 @@ namespace ReverseMarkdown.Converters
                 content = " ";
             }
             
-            return content;
-        }
-        
-        private static string PreserveKeyCharsWithinBackTicks(string content)
-        {
-            var rx = new Regex("`.*?`");
-
-            content = rx.Replace(content, p => p.Value.Replace(@"\*", "*").Replace(@"\_", "_"));
-
             return content;
         }
     }
