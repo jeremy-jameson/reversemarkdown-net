@@ -268,6 +268,26 @@ namespace ReverseMarkdown.Test
         }
 
         [Fact]
+        public Task WhenThereAreUnderscoresBetweenLetters_ThenDoNotEscapeUnderscores()
+        {
+            var html = "FABRIKAM_BUILD_CONFIGURATION";
+            return CheckConversion(html);
+        }
+
+        [Fact]
+        public Task WhenThereAreUnderscoresThatRequireEscaping_ThenEscapeUnderscores()
+        {
+            var html =
+@"<ul>
+    <li>_NT_SYMBOL_PATH</li>
+    <li>FOO__BAR__FOOBAR</li>
+    <li>Sample path from SharePoint: _catalogs/masterpage</li>
+    <li>Some PowerShell: $tfFolders | foreach { tf workfold /cloak $_.Substring(1) }</li>
+</ul>";
+            return CheckConversion(html);
+        }
+
+        [Fact]
         public Task WhenThereIsEmTag_ThenConvertToMarkdownSingleAsterisks()
         {
             var html = "This is a <em>sample</em> paragraph";

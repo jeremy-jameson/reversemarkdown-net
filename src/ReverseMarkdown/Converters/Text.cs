@@ -22,7 +22,6 @@ namespace ReverseMarkdown.Converters
             _escapedKeyChars.Add(@"\{", @"\\{");
 
             _escapedKeyChars.Add("*", @"\*");
-            _escapedKeyChars.Add("_", @"\_");
 
             Converter.Register("#text", this);
         }
@@ -62,6 +61,19 @@ namespace ReverseMarkdown.Converters
             // text for a list)
             content = Regex.Replace(content, @"^\+ ", @"\+ ");
             content = Regex.Replace(content, "^- ", @"\- ");
+
+            // Escape '_' that is *not* followed by a word character
+            // Note: "[^\w]" is equivalent to [^a-zA-Z0-9_]
+            content = Regex.Replace(content, @"(_[^\w])", @"\$1");
+
+            // Escape '_' after a space
+            content = Regex.Replace(content, @"( _)", @" \_");
+
+            // Escape '_' at beginning of line
+            content = Regex.Replace(content, @"(^_)", @"\$1");
+
+            // Escape double underscores
+            content = Regex.Replace(content, @"(__)", @"\_\_");
 
             foreach (var item in _escapedKeyChars)
             {

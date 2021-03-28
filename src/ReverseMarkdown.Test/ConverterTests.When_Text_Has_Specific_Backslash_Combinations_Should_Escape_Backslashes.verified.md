@@ -4,7 +4,7 @@
 - E:\NotBackedUp\\...
 - Archive\\{year}\\{month}\\{day}
 - \\\\beast\Users$\\%USERNAME%\Application Data
-- ..\\..\\..\CoreServices\bin\\%BUILD\_CONFIGURATION%\Fabrikam.Demo.CoreServices.dll
+- ..\\..\\..\CoreServices\bin\\%BUILD_CONFIGURATION%\Fabrikam.Demo.CoreServices.dll
 - ..\\..\\..\Portal\Web\12\TEMPLATE\LAYOUTS\Fabrikam\
 - \Windows\Installer\\$PatchCache$
 - &lt;configuration&gt;\\&lt;system.web&gt;\\&lt;httpModules&gt;
