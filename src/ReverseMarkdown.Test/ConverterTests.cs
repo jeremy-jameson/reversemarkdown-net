@@ -1607,6 +1607,33 @@ Text after preformatted content.";
             return CheckConversion(html);
         }
 
+        [Fact]
+        public Task When_Table_Has_Spanning_Rows_And_Columns_Should_Passthrough_HTML()
+        {
+            var html =
+@"<table>
+    <thead>
+        <tr>
+            <th rowspan='2'>Column A</th>
+            <th colspan='2'>Columns B&C</th>
+        </tr>
+        <tr>
+            <th>Column B</th>
+            <th>Column C</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>A1</td>
+            <td>B1</td>
+            <td>C1</td>
+        </tr
+    </tbody>
+</table>";
+
+            return CheckConversion(html);
+        }
+
         #region Whitespace tests
 
         [Fact]

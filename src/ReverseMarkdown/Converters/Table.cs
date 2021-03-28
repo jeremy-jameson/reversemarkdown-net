@@ -12,6 +12,22 @@ namespace ReverseMarkdown.Converters
             Converter.Register("table", this);
         }
 
+        public override string Convert(HtmlNode node)
+        {
+            // "colspan" and "rowspan" are not supported in pipe-delimited
+            // Markdown tables, so leave as HTML
+            if (node.Descendants()
+                .Where(x =>
+                    x.GetAttributeValue("colspan", null) != null
+                    || x.GetAttributeValue("rowspan", null) != null)
+                .Any() == true)
+            {
+                return node.OuterHtml;
+            }
+
+            return base.Convert(node);
+        }
+
         public override string GetMarkdownPrefix(HtmlNode node)
         {
             // if table does not have a header row , add empty header row if set in config
