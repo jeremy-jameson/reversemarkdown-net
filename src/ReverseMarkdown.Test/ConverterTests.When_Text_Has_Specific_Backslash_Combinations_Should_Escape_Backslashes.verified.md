@@ -10,3 +10,4 @@
 - &lt;configuration&gt;\\&lt;system.web&gt;\\&lt;httpModules&gt;
 - {build version or branch folder}\\[Source]\Deployment Files\Scripts
 - **..\\..\\..\Portal\Web\12\TEMPLATE\LAYOUTS\Fabrikam\\**
+- *..\\..\\..\Portal\Web\12\TEMPLATE\LAYOUTS\Fabrikam\\*

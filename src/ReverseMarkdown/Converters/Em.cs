@@ -27,6 +27,25 @@ namespace ReverseMarkdown.Converters
             return base.Convert(node);
         }
 
+        public override string GetMarkdownContent(HtmlNode node)
+        {
+            var content = TreatChildren(node);
+
+            // Check if the content ends with a backslash
+            //
+            // If the content ends with a single backslash, then escape that
+            // backslash -- otherwise, the first character from the suffix ('*')
+            // would be escaped in the Markdown by the trailing backslash
+            if (content != null
+                && content.EndsWith(@"\") == true
+                && content.EndsWith(@"\\") == false)
+            {
+                content += @"\";
+            }
+
+            return content;
+        }
+
         public override string GetMarkdownPrefix(HtmlNode node)
         {
             return $"{Converter.Config.EmphasisChar}";

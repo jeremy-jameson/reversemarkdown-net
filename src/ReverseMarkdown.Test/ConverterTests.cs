@@ -1601,6 +1601,7 @@ Text after preformatted content.";
     <li>&lt;configuration&gt;\&lt;system.web&gt;\&lt;httpModules&gt;</li>
     <li>{build version or branch folder}\[Source]\Deployment Files\Scripts</li>
     <li><strong>..\..\..\Portal\Web\12\TEMPLATE\LAYOUTS\Fabrikam\</strong></li>
+    <li><em>..\..\..\Portal\Web\12\TEMPLATE\LAYOUTS\Fabrikam\</em></li>
 </ul>";
 
             return CheckConversion(html);
