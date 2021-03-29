@@ -11,4 +11,4 @@
 - {build version or branch folder}\\[Source]\Deployment Files\Scripts
 - **..\\..\\..\Portal\Web\12\TEMPLATE\LAYOUTS\Fabrikam\\**
 - *..\\..\\..\Portal\Web\12\TEMPLATE\LAYOUTS\Fabrikam\\*
-- C:\NotBackedUp\Fabrikam\Demo\SharePointExtranet\\_latest
+- C:\NotBackedUp\Fabrikam\Demo\SharePointExtranet\\\_latest

@@ -198,6 +198,9 @@ namespace ReverseMarkdown
             // Escape '_' that is *not* followed by a word character
             new TextReplacementPattern(@"(_[^\w])", @"\$1"),
 
+            // Escape '_' after an escaped backslash (@"\\")
+            new TextReplacementPattern(@"(\\\\_)", @"\$1"),
+
             // Escape '_' after a space
             new TextReplacementPattern(@" _", @" \_"),
 
