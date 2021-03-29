@@ -181,11 +181,14 @@ namespace ReverseMarkdown
             // Important: Escape single backslashes -- as necessary -- *before*
             // escaping other items
             //
-            // Escape '\' that is *not* followed by a word character (\w),
-            // whitespace (\s), a double quote ("), or another backslash (\)
+            // Escape '\' that is *not* followed by an ASCII character or digit
+            // (a-z, A-Z, and 0-9), whitespace (\s), a double quote ("), or
+            // another backslash (\).
             //
-            // Note: "[^\w]" is equivalent to [^a-zA-Z0-9_]
-            new TextReplacementPattern(@"(\\[^\w\s""\\])", @"\$1"),
+            // Note: Do not use "any word character" (i.e. "\w") since that is
+            // equivalent to [^a-zA-Z0-9_] and backslashes before underscores
+            // *must* be escaped.
+            new TextReplacementPattern(@"(\\[^a-zA-Z0-9\s""\\])", @"\$1"),
 
             // Escape '+' and '-' at beginning of line (to avoid mistaking plain
             // text for a list)

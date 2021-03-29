@@ -1639,6 +1639,7 @@ Text after preformatted content.";
     <li>{build version or branch folder}\[Source]\Deployment Files\Scripts</li>
     <li><strong>..\..\..\Portal\Web\12\TEMPLATE\LAYOUTS\Fabrikam\</strong></li>
     <li><em>..\..\..\Portal\Web\12\TEMPLATE\LAYOUTS\Fabrikam\</em></li>
+    <li>C:\NotBackedUp\Fabrikam\Demo\SharePointExtranet\_latest</li>
 </ul>";
 
             return CheckConversion(html);
