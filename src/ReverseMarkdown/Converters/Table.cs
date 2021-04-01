@@ -25,6 +25,14 @@ namespace ReverseMarkdown.Converters
                 return node.OuterHtml;
             }
 
+            if (node.Descendants()
+                .Where(x =>
+                    x.GetAttributeValue("class", null) == "reference")
+                .Any() == true)
+            {
+                return node.OuterHtml;
+            }
+
             return base.Convert(node);
         }
 
